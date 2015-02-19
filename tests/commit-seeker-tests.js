@@ -1,6 +1,8 @@
 var test = require('tape');
 var createCommitSeeker = require('../commit-seeker').create;
 var jsonfile = require('jsonfile');
+var conformAsync = require('conform-async');
+var _ = require('lodash');
 
 var eventResponse = jsonfile.readFileSync(__dirname + '/event-response.json');
 
@@ -36,4 +38,51 @@ test('Get commit URLs', function commitURLs(t) {
     ],
     'Gets the commit URLs out of the response.'
   );
+});
+
+test('Commit stream from URLs', function commitStream(t) {
+  var mockCommits = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(
+    function makeMockCommit(sha) {
+      return {
+        sha: sha
+      };
+    }
+  );
+
+  t.plan(mockCommits.length);
+
+  var mockRequestIndex = 0;
+  var emittedCommits = [];
+
+  var seeker = createCommitSeeker({
+    request: function mockRequest(url, done) {
+      conformAsync.callBackOnNextTick(done,
+        null,
+        {
+          url: url
+        },
+        mockCommits[mockRequestIndex]
+      );
+      mockRequestIndex += 1;
+    }
+  });
+
+  var URLs = seeker.getCommitURLsFromEventResponse(eventResponse);
+
+  var commitStream = seeker.createCommitStream({
+    URLs: URLs
+  });
+
+  commitStream.on('data', function checkData(commit) {
+    emittedCommits.push(commit);
+  });
+
+  commitStream.on('end', function onEnd() {
+    mockCommits.forEach(function findMockCommitInEmittedCommits(mockCommit) {
+      t.ok(
+        _.findWhere(emittedCommits, mockCommit),
+        'Commit received from request was emitted.'
+      );
+    });
+  });
 });

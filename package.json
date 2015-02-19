@@ -21,6 +21,7 @@
     "tape": "^3.0.3"
   },
   "dependencies": {
+    "conform-async": "^1.1.1",
     "github": "^0.2.3",
     "jsonfile": "^2.0.0",
     "lodash": "^3.2.0",
