@@ -1,18 +1,14 @@
 var test = require('tape');
-var createCommitSeeker = require('../commit-seeker').create;
+var commitsFromEvents = require('../commits-from-events');
 var jsonfile = require('jsonfile');
-var conformAsync = require('conform-async');
-var _ = require('lodash');
 
 var eventResponse = jsonfile.readFileSync(__dirname + '/event-response.json');
 
 test('Get commit URLs', function commitURLs(t) {
   t.plan(1);
 
-  var seeker = createCommitSeeker();
-
   t.deepEqual(
-    seeker.getCommitURLsFromEventResponse(eventResponse),
+    commitsFromEvents(eventResponse),
     [
       "https://api.github.com/repos/mikermcneil/sails-hook-apianalytics/commits/e62de63b967911c5e196cc50d2aa959ff411c89f",
       "https://api.github.com/repos/mikermcneil/sails-hook-apianalytics/commits/06f75a7826fafa9a50fbd16514e12314e167d505",
@@ -38,51 +34,4 @@ test('Get commit URLs', function commitURLs(t) {
     ],
     'Gets the commit URLs out of the response.'
   );
-});
-
-test('Commit stream from URLs', function commitStream(t) {
-  var mockCommits = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(
-    function makeMockCommit(sha) {
-      return {
-        sha: sha
-      };
-    }
-  );
-
-  t.plan(mockCommits.length);
-
-  var mockRequestIndex = 0;
-  var emittedCommits = [];
-
-  var seeker = createCommitSeeker({
-    request: function mockRequest(url, done) {
-      conformAsync.callBackOnNextTick(done,
-        null,
-        {
-          url: url
-        },
-        mockCommits[mockRequestIndex]
-      );
-      mockRequestIndex += 1;
-    }
-  });
-
-  var URLs = seeker.getCommitURLsFromEventResponse(eventResponse);
-
-  var commitStream = seeker.createCommitStream({
-    URLs: URLs
-  });
-
-  commitStream.on('data', function checkData(commit) {
-    emittedCommits.push(commit);
-  });
-
-  commitStream.on('end', function onEnd() {
-    mockCommits.forEach(function findMockCommitInEmittedCommits(mockCommit) {
-      t.ok(
-        _.findWhere(emittedCommits, mockCommit),
-        'Commit received from request was emitted.'
-      );
-    });
-  });
 });

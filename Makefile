@@ -1,2 +1,3 @@
 test:
-	node tests/commit-seeker-tests.js
+	node tests/commits-from-events-tests.js
+	node tests/commit-stream-tests.js

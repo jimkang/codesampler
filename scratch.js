@@ -1,6 +1,7 @@
 var GitHubApi = require("github");
 var _ = require('lodash');
-var queue = require('queue-async');
+var createCommitSeeker = require('./commit-seeker').create;
+var request = require('request');
 
 var github = new GitHubApi({
     // required
@@ -22,10 +23,27 @@ github.events.get(
                 per_page: 30
             },
             function(err, res) {
-                console.log(JSON.stringify(res, null, '  '));
-                var payloads = _.pluck(res, 'payload');
-                var commits = _.compact(_.flatten(_.pluck(payloads, 'commits')));
-                var commitURLs = _.pluck(commits, 'url');
+                var commitSeeker = createCommitSeeker({
+                    request: request
+                });
+                var URLs = commitSeeker.getCommitURLsFromEventResponse(res);
+
+                var commitStream = commitSeeker.createCommitStream({
+                    URLs: URLs
+                });
+
+                commitStream.on('data', function checkData(commit) {
+                    console.log(JSON.stringify(JSON.parse(commit), null, '  '));
+                });
+
+                commitStream.on('end', function onEnd() {
+                    console.log('Stream complete!');
+                });
+
+                // console.log(JSON.stringify(res, null, '  '));
+                // var payloads = _.pluck(res, 'payload');
+                // var commits = _.compact(_.flatten(_.pluck(payloads, 'commits')));
+                // var commitURLs = _.pluck(commits, 'url');
                 // console.log(commitURLs);
                 // // other assertions go here
                 // Assert.equal(err, null);
