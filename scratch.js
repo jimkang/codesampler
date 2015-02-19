@@ -1,7 +1,9 @@
 var GitHubApi = require("github");
 var _ = require('lodash');
-var createCommitSeeker = require('./commit-seeker').create;
+var commitsFromEvents = require('./commits-from-events');
+var createCommitHeadwaters = require('./commit-stream').create;
 var request = require('request');
+var config = require('./config.js');
 
 var github = new GitHubApi({
     // required
@@ -23,13 +25,12 @@ github.events.get(
                 per_page: 30
             },
             function(err, res) {
-                var commitSeeker = createCommitSeeker({
-                    request: request
+                var commitHeadwaters = createCommitHeadwaters({
+                  request: request,
                 });
-                var URLs = commitSeeker.getCommitURLsFromEventResponse(res);
 
-                var commitStream = commitSeeker.createCommitStream({
-                    URLs: URLs
+                var commitStream = commitHeadwaters.createCommitStream({
+                  urls: commitsFromEvents(res)
                 });
 
                 commitStream.on('data', function checkData(commit) {

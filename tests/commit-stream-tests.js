@@ -1,5 +1,5 @@
 var test = require('tape');
-var createCommitSeeker = require('../commit-stream').create;
+var createCommitHeadwaters = require('../commit-stream').create;
 var conformAsync = require('conform-async');
 var _ = require('lodash');
 
@@ -48,7 +48,7 @@ test('Commit stream from URLs', function commitStream(t) {
 
   var c = 0;
 
-  var seeker = createCommitSeeker({
+  var seeker = createCommitHeadwaters({
     request: function mockRequest(opts, done) {
       c += 1;
       t.deepEqual(opts.auth, authParams, 'Uses basic auth params in request.');
