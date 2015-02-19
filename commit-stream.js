@@ -36,64 +36,33 @@ function createCommitHeadwaters(ctorOpts) {
     }
 
     var urls = opts.urls;
+    var started = false;
 
     var stream = Readable({
       objectMode: true
     });
 
-    var started = false;
-    var responsesReceived = 0;
-    var queuedURLs = [];
-    var outstandingRequests = 0;
-
     function makeRequest(url, tellQueueDone) {
-      // if (outstandingRequests >= maxConcurrentRequests) {
-      //   queuedURLs.push(url);
-      // }
-      // else {
-      //   outstandingRequests += 1;
-        var requestOpts = {
-          url: url,
-          headers: {
-            'user-agent': 'commit-seeker'
-          }
-        };
-
-        if (authParams) {
-          requestOpts.auth = authParams;
+      var requestOpts = {
+        url: url,
+        headers: {
+          'user-agent': 'commit-seeker'
         }
+      };
 
-        function saveCommitFromResponse(error, response, body) {
-          // responsesReceived += 1;
-          // outstandingRequests -= 1;
+      if (authParams) {
+        requestOpts.auth = authParams;
+      }
 
-          if (!error) {
-            stream.push(body);
-          }
-          // if (responsesReceived >= URLs.length) {
-          //   console.log('URLs.length:', URLs.length);
-          //   console.log('responsesReceived:', responsesReceived);
-          //   stream.push(null);
-          // }
-
-          // dequeueURL(response.url);
-          tellQueueDone(error);
+      function saveCommitFromResponse(error, response, body) {
+        if (!error) {
+          stream.push(body);
         }
+        tellQueueDone(error);
+      }
 
-        request(requestOpts, saveCommitFromResponse);
-      // }
+      request(requestOpts, saveCommitFromResponse);
     }
-
-    // function dequeueURL(url) {
-    //   var index = queuedURLs.indexOf(url);
-    //   if (index !== -1) {
-    //     queuedURLs.splice(index, 1);
-    //   }
-
-    //   if (queuedURLs.length > 0) {
-    //     makeRequest(queuedURLs.shift());
-    //   }
-    // }
 
     var q = queue(maxConcurrentRequests);
 
