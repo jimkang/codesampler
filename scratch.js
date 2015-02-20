@@ -19,14 +19,25 @@ var github = new GitHubApi({
     }
 });
 
+github.authenticate({
+    type: "basic",
+    username: config.github.user,
+    password: config.github.pass
+});
+
 github.events.get(
             {
                 page: 1,
                 per_page: 30
             },
-            function(err, res) {
+            function(error, res) {
+                if (error) {
+                  console.log(error);
+                }
+
                 var commitHeadwaters = createCommitHeadwaters({
                   request: request,
+                  authParams: config.github
                 });
 
                 var commitStream = commitHeadwaters.createCommitStream({
@@ -34,7 +45,17 @@ github.events.get(
                 });
 
                 commitStream.on('data', function checkData(commit) {
-                    console.log(JSON.stringify(JSON.parse(commit), null, '  '));
+                  var commit = JSON.parse(commit);
+                  var patches = _.compact(_.pluck(commit.files, 'patch'));
+                  formattedPatches = patches.map(function formatPatch(patch) {
+                    var replacement = patch.replace(/\\n/g, '\n');
+                    return replacement;
+                  });
+
+                  
+                  formattedPatches.forEach(function logIt(formattedPatch) {
+                    console.log(formattedPatch);
+                  });
                 });
 
                 commitStream.on('end', function onEnd() {
