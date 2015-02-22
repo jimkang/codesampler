@@ -8,9 +8,13 @@ Installation
 
 Clone this repo.
 
-Then, create a `config.js` file in the project root that contains your [Twitter API keys](https://apps.twitter.com/) and your [Wordnik API key](http://developer.wordnik.com/). Example:
+Then, create a `config.js` file in the project root that contains your Github, [Twitter API keys](https://apps.twitter.com/), and [Wordnik API key](http://developer.wordnik.com/). Example:
 
     module.exports = {
+      github: {
+        user: 'wizard',
+        pass: 'magic'
+      },
       twitter: {
         consumer_key: 'asdfkljqwerjasdfalpsdfjas',
         consumer_secret: 'asdfasdjfbkjqwhbefubvskjhfbgasdjfhgaksjdhfgaksdxvc',
