@@ -1,5 +1,5 @@
 {
-  "name": "slashslashtodo",
+  "name": "codesampler",
   "version": "1.0.0",
   "description": "Does some cool things.",
   "main": "index.js",
@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:jimkang/slashslashtodo.git"
+    "url": "git@github.com:jimkang/codesampler.git"
   },
   "keywords": [],
   "author": "Jim Kang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jimkang/slashslashtodo/issues"
+    "url": "https://github.com/jimkang/codesampler/issues"
   },
-  "homepage": "https://github.com/jimkang/slashslashtodo",
+  "homepage": "https://github.com/jimkang/codesampler",
   "devDependencies": {
     "tape": "^3.0.3"
   },
