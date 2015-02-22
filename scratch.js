@@ -1,7 +1,7 @@
 var GitHubApi = require("github");
 var _ = require('lodash');
 var commitsFromEvents = require('./commits-from-events');
-var createCommitHeadwaters = require('./commit-stream').create;
+var createCommitHeadwaters = require('url-body-stream').create;
 var request = require('request');
 var config = require('./config.js');
 
@@ -40,7 +40,7 @@ github.events.get(
                   authParams: config.github
                 });
 
-                var commitStream = commitHeadwaters.createCommitStream({
+                var commitStream = commitHeadwaters.createURLBodyStream({
                   urls: commitsFromEvents(res)
                 });
 

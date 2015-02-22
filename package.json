@@ -27,6 +27,7 @@
     "lodash": "^3.2.0",
     "queue-async": "^1.0.7",
     "request": "^2.53.0",
-    "tape": "^3.5.0"
+    "tape": "^3.5.0",
+    "url-body-stream": "^1.1.0"
   }
 }
