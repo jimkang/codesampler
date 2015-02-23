@@ -1,33 +1,53 @@
 var conformAsync = require('conform-async');
 var _ = require('lodash');
 
-var findCStyleCommentsRegex = /\/\/.*[^\n]+/g;
+var cStyleCommentsRegex = /\/\/.*[^\n]+/g;
+// TODO: Other kinds of comments.
+
+var functionRegexes = [
+  /function\s*.*\(.*\).*[^\n]/g, // JS
+  /fn\s*.*\(.*\).*[^\n]/g, // Rust
+  /func\s*.*\(.*\).*[^\n]/g, // Swift
+];
 
 function createCommitSummaryAnalyzer(opts) {
 
   function analyze(commitSummary, done) {
     var analysis = {};
 
-    var comments = findComments(commitSummary);
+    var comments = findInPatches(commitSummary, findCommentsInPatch);
+    var functions = findInPatches(commitSummary, findFunctionsInPatch);
+
     if (comments) {
       analysis.comments = comments;
+    }
+    if (functions) {
+      analysis.functions = functions;
     }
 
     conformAsync.callBackOnNextTick(done, null, analysis);
   }
 
-  function findComments(commitSummary) {
-    var comments = [];
+  function findInPatches(commitSummary, patchSearcher) {
+    var targets = [];
     if (commitSummary.patches) {
-      comments = _.flatten(_.compact(
-        commitSummary.patches.map(findCommentsInPatch)
+      targets = _.flatten(_.compact(
+        commitSummary.patches.map(patchSearcher)
       ));
     }
-    return comments;
+    return targets;
   }
 
   function findCommentsInPatch(patch) {
-    return patch.match(findCStyleCommentsRegex);
+    return patch.match(cStyleCommentsRegex);
+  }
+
+  function findFunctionsInPatch(patch) {
+    function findFunctionsWithRegex(found, regex) {
+      return found.concat(patch.match(regex));
+    }
+
+    return _.compact(functionRegexes.reduce(findFunctionsWithRegex, []));
   }
 
   return {

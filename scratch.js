@@ -51,8 +51,7 @@ github.events.get(
                     var replacement = patch.replace(/\\n/g, '\n');
                     return replacement;
                   });
-
-                  
+            
                   formattedPatches.forEach(function logIt(formattedPatch) {
                     console.log(formattedPatch);
                   });
