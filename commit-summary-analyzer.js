@@ -1,8 +1,13 @@
 var conformAsync = require('conform-async');
 var _ = require('lodash');
+var through2 = require('through2');
 
-var cStyleCommentsRegex = /\/\/.*[^\n]+/g;
-// TODO: Other kinds of comments.
+var commentRegexes = [
+  /[^https*:]\/\/.*[^\n]+/g, // C-style
+  // /#.*[^\n]+/g // Python, shell.
+];
+
+// TODO: Pure regexes are not a good way to find comments.
 
 var functionRegexes = [
   /function\s*.*\(.*\).*[^\n]/g, // JS
@@ -11,12 +16,11 @@ var functionRegexes = [
 ];
 
 function createCommitSummaryAnalyzer(opts) {
-
   function analyze(commitSummary, done) {
     var analysis = {};
 
-    var comments = findInPatches(commitSummary, findCommentsInPatch);
-    var functions = findInPatches(commitSummary, findFunctionsInPatch);
+    var comments = findInPatches(commitSummary, commentRegexes);
+    var functions = findInPatches(commitSummary, functionRegexes);
 
     if (comments) {
       analysis.comments = comments;
@@ -28,18 +32,22 @@ function createCommitSummaryAnalyzer(opts) {
     conformAsync.callBackOnNextTick(done, null, analysis);
   }
 
-  function findInPatches(commitSummary, patchSearcher) {
+  function findInPatches(commitSummary, regexes) {
     var targets = [];
+    var curriedFind = _.curry(findInPatchWithRegexes)(regexes);
+
     if (commitSummary.patches) {
-      targets = _.flatten(_.compact(
-        commitSummary.patches.map(patchSearcher)
-      ));
+      targets = _.flatten(_.compact(commitSummary.patches.map(curriedFind)));
     }
     return targets;
   }
 
-  function findCommentsInPatch(patch) {
-    return patch.match(cStyleCommentsRegex);
+  function findInPatchWithRegexes(regexes, patch) {
+    function findWithRegex(found, regex) {
+      return found.concat(patch.match(regex));
+    }
+
+    return _.compact(regexes.reduce(findWithRegex, []));
   }
 
   function findFunctionsInPatch(patch) {
@@ -48,6 +56,10 @@ function createCommitSummaryAnalyzer(opts) {
     }
 
     return _.compact(functionRegexes.reduce(findFunctionsWithRegex, []));
+  }
+
+  function createAnalysisStream(opts) {
+
   }
 
   return {
