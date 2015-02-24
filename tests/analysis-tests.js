@@ -15,10 +15,6 @@ test('Comment finding', function commentFinding(t) {
     ]
   };
 
-// new patches
-// '@@ -0,0 +1,25 @@\n+# Exclude the .htaccess file\n+.htaccess\n+\n+# Exclude any PSD/AI source\n+*.psd\n+*.ai\n+ \n+# Exclude the build products\n+build/*\n+*.[oa]\n+\n+# Exclude OS X folder attributes\n+.DS_Store\n+ \n+# Exclude Text Files\n+*.txt\n+# Except read me\n+!README.txt\n+\n+# Exclude log files\n+*.log\n+\n+# Exclude Fonts\n+_fonts/\n+ \n'
-// '@@ -63,15 +63,11 @@ pub fn write_stream<T: Stream>(stream: &mut BufferedStream<T>, data: &Vec<u8>) {\n     let fin = 0b1 << 15;        // FIN frame\n     let opcode = 0b0001 << 8;   // text mode\n     let mask = 0b0 << 7;        // no mask\n-    let payload_len = if data.len() <= 125 {\n-        // case: 7-bit data length will suffice\n-        data.len()\n-    } else if data.len() > 2.pow(16) {\n-        // case: 64-bit data length\n-        127\n-    } else {\n-        // case: 16-bit data length\n-        126\n+\n+    let payload_len = match data.len() {\n+        l if l <= 125 => l,\n+        l if l > 2.pow(16) => 127,\n+        _ => 126,\n     } as u16;\n'
-
   var analyzer = createCommitSummaryAnalyzer();
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
@@ -106,20 +102,75 @@ test('Function finding', function functionFinding(t) {
   });
 });
 
-// test('Analysis stream', function testAnalysisStream(t) {
-//   var commitSummaries = [
-//   ];
+test('Analysis stream', function testAnalysisStream(t) {
+  t.plan(5);
 
+  var commitSummaries = [
+    {
+      sha: 'a-one',
+      url: 'http://a.one',
+      patches: [
+        '@@ -228,6 +230,12 @@ func TransportFor(config *Config) (http.RoundTripper, error) {\n    if tlsConfig != nil {\n      transport = &http.Transport{\n        TLSClientConfig: tlsConfig,\n+       Proxy:           http.ProxyFromEnvironment,\n+       Dial: (&net.Dialer{\n+         Timeout:   30 * time.Second,\n+         KeepAlive: 30 * time.Second,\n+       }).Dial,\n+       TLSHandshakeTimeout: 10 * time.Second,\n      }\n    } else {\n      transport = http.DefaultTransport\n'
+      ]
+    },
+    {
+      sha: 'b-two',
+      url: 'http://b.two',
+      patches: [
+        '@@ -63,15 +63,11 @@ pub fn write_stream<T: Stream>(stream: &mut BufferedStream<T>, data: &Vec<u8>) {\n     let fin = 0b1 << 15;        // FIN frame\n     let opcode = 0b0001 << 8;   // text mode\n     let mask = 0b0 << 7;        // no mask\n-    let payload_len = if data.len() <= 125 {\n-        // case: 7-bit data length will suffice\n-        data.len()\n-    } else if data.len() > 2.pow(16) {\n-        // case: 64-bit data length\n-        127\n-    } else {\n-        // case: 16-bit data length\n-        126\n+\n+    let payload_len = match data.len() {\n+        l if l <= 125 => l,\n+        l if l > 2.pow(16) => 127,\n+        _ => 126,\n     } as u16;\n'
+      ]
+    }
+  ];
 
-//   var expectedAnalyses = [
-//   ];
+  var expectedAnalyses = [
+    {
+      comments: [
 
-//   var analyzer = analyzer.createCommitSummaryAnalyzer();
-//   var analysisStream = analyzer.createAnalysisStream();
-//   analysisStream.on('data', function checkData(analysis) {
+      ],
+      functions: [
+        'func TransportFor(config *Config) (http.RoundTripper, error) {'      
+      ]
+    },
+    {
+      comments: [
+       ' // FIN frame',
+       ' // text mode',
+       ' // no mask',
+       ' // case: 7-bit data length will suffice',
+       ' // case: 64-bit data length',
+       ' // case: 16-bit data length'
+      ],
+      functions: [
+        'fn write_stream<T: Stream>(stream: &mut BufferedStream<T>, data: &Vec<u8>) {'      
+      ]
+    },
+  
+  ];
 
-//   });
-//   analysisStream.on('end', function onEnd() {
-//     t.pass('Stream ends.');
-//   });
-// });
+  var streamIndex = 0;
+
+  var analyzer = createCommitSummaryAnalyzer();
+  var analysisStream = analyzer.createAnalysisStream();
+
+  analysisStream.on('data', function checkData(analysis) {
+    t.deepEqual(
+      analysis.comments,
+      expectedAnalyses[streamIndex].comments,
+      'The correct comments are in the analysis.'
+    );
+    t.deepEqual(
+      analysis.functions,
+      expectedAnalyses[streamIndex].functions,
+      'The correct functions are in the analysis.'
+    );
+    
+    streamIndex += 1;
+  });
+
+  analysisStream.on('end', function onEnd() {
+    t.pass('Stream ends.');
+  });
+
+  commitSummaries.forEach(analysisStream.write.bind(analysisStream));
+  analysisStream.end();
+});

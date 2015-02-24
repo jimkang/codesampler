@@ -59,11 +59,31 @@ function createCommitSummaryAnalyzer(opts) {
   }
 
   function createAnalysisStream(opts) {
+    var analysisStream = through2(
+      {
+        objectMode: true
+      },
+      function convertToAnalysis(commitSummary, enc, callback) {
+        var stream = this;
 
+        analyze(commitSummary, function done(error, analysis) {
+          if (error) {
+            console.log(error);
+          }
+          else {
+            stream.push(analysis);
+          }
+          callback();
+        });
+      }
+    );
+
+    return analysisStream;
   }
 
   return {
-    analyze: analyze
+    analyze: analyze,
+    createAnalysisStream: createAnalysisStream
   };
 }
 
