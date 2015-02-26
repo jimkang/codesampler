@@ -29,6 +29,7 @@
     "request": "^2.53.0",
     "tape": "^3.5.0",
     "through2": "^0.6.3",
+    "tweet-truncate": "^1.1.0",
     "url-body-stream": "^1.1.0"
   }
 }
