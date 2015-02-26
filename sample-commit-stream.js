@@ -4,6 +4,7 @@ var commitsFromEvents = require('./commits-from-events');
 var createBodyHeadwaters = require('url-body-stream').create;
 var request = require('request');
 var config = require('./config.js');
+var through2 = require('through2');
 
 function createSampleCommitStream(opts, done) {
   var github;
