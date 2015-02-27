@@ -22,10 +22,10 @@ function createCommitSummaryAnalyzer(opts) {
     var comments = findInPatches(commitSummary, commentRegexes);
     var functions = findInPatches(commitSummary, functionRegexes);
 
-    if (comments) {
+    if (comments && comments.length > 0) {
       analysis.comments = comments;
     }
-    if (functions) {
+    if (functions && functions.length > 0) {
       analysis.functions = functions;
     }
 

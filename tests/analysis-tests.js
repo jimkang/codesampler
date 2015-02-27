@@ -124,9 +124,7 @@ test('Analysis stream', function testAnalysisStream(t) {
 
   var expectedAnalyses = [
     {
-      comments: [
-
-      ],
+      comments: undefined,
       functions: [
         'func TransportFor(config *Config) (http.RoundTripper, error) {'      
       ]
