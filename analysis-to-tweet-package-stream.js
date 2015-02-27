@@ -23,13 +23,19 @@ function createAnalysisToTweetPackageStream(opts) {
       objectMode: true
     },
     function truncateTextToTweetSize(analysis, enc, callback) {
-      this.push(tweetTruncate({
-        text: featurePicker(analysis),
-        delimiter: '\n',
-        urlsToAdd: [
-          analysis.url
-        ]
-      }));
+      var feature = featurePicker(analysis);
+      if (feature) {
+        this.push(tweetTruncate({
+          text: featurePicker(analysis),
+          delimiter: '\n',
+          urlsToAdd: [
+            analysis.url
+          ]
+        }));
+      }
+      else if (log) {
+        log('No feature found in analysis:', analysis);
+      }
       callback();
     }
   );
