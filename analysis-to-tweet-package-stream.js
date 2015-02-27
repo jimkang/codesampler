@@ -2,20 +2,20 @@ var through2 = require('through2');
 var tweetTruncate = require('tweet-truncate');
 
 function createAnalysisToTweetPackageStream(opts) {
-  var featurePicker;
+  var excerptPicker;
   var log;
 
   if (opts) {
-    if (opts.featurePicker) {
-      featurePicker = opts.featurePicker;
+    if (opts.excerptPicker) {
+      excerptPicker = opts.excerptPicker;
     }
     if (opts.log) {
       log = opts.log;
     }
   }
 
-  if (!featurePicker) {
-    throw new Error('No featurePicker given to analysisToTweetPackageStream.');
+  if (!excerptPicker) {
+    throw new Error('No excerptPicker given to analysisToTweetPackageStream.');
   }
 
   return through2(
@@ -23,10 +23,10 @@ function createAnalysisToTweetPackageStream(opts) {
       objectMode: true
     },
     function truncateTextToTweetSize(analysis, enc, callback) {
-      var feature = featurePicker(analysis);
-      if (feature) {
+      var excerpt = excerptPicker(analysis);
+      if (excerpt) {
         this.push(tweetTruncate({
-          text: featurePicker(analysis),
+          text: excerptPicker(analysis),
           delimiter: '\n',
           urlsToAdd: [
             analysis.url
@@ -34,7 +34,7 @@ function createAnalysisToTweetPackageStream(opts) {
         }));
       }
       else if (log) {
-        log('No feature found in analysis:', analysis);
+        log('No excerpt found in analysis:', analysis);
       }
       callback();
     }
