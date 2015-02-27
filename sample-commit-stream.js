@@ -33,7 +33,8 @@ function createSampleCommitStream(opts, done) {
   if (!urlBodyHeadwaters) {
     urlBodyHeadwaters = createBodyHeadwaters({
       request: request,
-      authParams: config.github
+      authParams: config.github,
+      parseJson: true
     });
   }
 
