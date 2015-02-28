@@ -32,6 +32,7 @@
     "tape": "^3.5.0",
     "through2": "^0.6.3",
     "tweet-truncate": "^1.1.0",
+    "twit": "^1.1.20",
     "url-body-stream": "^1.2.0"
   }
 }

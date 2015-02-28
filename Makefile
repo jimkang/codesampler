@@ -7,3 +7,9 @@ test:
 
 test-integration:
 	node tests/integration/sample-analyze-excerpt-tests.js
+
+run:
+	node run-code-sampler.js
+
+dry-run:
+	node run-code-sampler.js --dry
