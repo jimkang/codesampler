@@ -7,6 +7,7 @@ test('Post packages', function postPackages(t) {
 
   var tweetStream = createAnalysisToExcerptStream({
     excerptPicker: function pickFunction(analysis, done) {
+      
       conformAsync.callBackOnNextTick(
         done, null, '`' + analysis.functions[0] + '`'
       );

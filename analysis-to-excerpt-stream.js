@@ -4,7 +4,7 @@ var tweetTruncate = require('tweet-truncate');
 function createAnalysisToTweetExcerptStream(opts) {
   var excerptPicker;
   var log = function noOp() {};
-
+ 
   if (opts) {
     if (opts.excerptPicker) {
       excerptPicker = opts.excerptPicker;
@@ -12,7 +12,7 @@ function createAnalysisToTweetExcerptStream(opts) {
     if (opts.log) {
       log = opts.log;
     }
-  }
+ }
 
   if (!excerptPicker) {
     throw new Error('No excerptPicker given to analysisToTweetExcerptStream.');

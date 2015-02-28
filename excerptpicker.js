@@ -4,11 +4,17 @@ var conformAsync = require('conform-async');
 
 function createExcerptPicker(opts) {
   var probable = defaultProbable;
+  var excerptFilter;
 
-  if (opts && opts.probable) {
-    probable = opts.probable;
+  if (opts) {
+    if (opts.probable) {
+      probable = opts.probable;
+    }
+    if (opts.excerptFilter) {
+      excerptFilter = opts.excerptFilter;
+    }
   }
-
+  
   return function pickExcerptFromAnalysis(analysis, done) {
     var chosenExcerptType;
     var fns = analysis.functions;
@@ -32,8 +38,22 @@ function createExcerptPicker(opts) {
     else {
       choices = _.uniq(comments);
     }
-
-    conformAsync.callBackOnNextTick(done, null, probable.pickFromArray(choices));
+    
+    if (excerptFilter) {
+      excerptFilter(choices, function pickFromFiltered(error, filteredChoices) {
+        if (error) {
+          done(error);
+        }
+        else {
+          done(null, probable.pickFromArray(filteredChoices));
+        }
+      });
+    }
+    else {
+      conformAsync.callBackOnNextTick(
+        done, null, probable.pickFromArray(choices)
+      );
+    }
   }
 }
 
