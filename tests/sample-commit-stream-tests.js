@@ -9,7 +9,7 @@ var Readable = require('stream').Readable;
 var commits = [
   {
     sha: '29a',
-    url: 'http://cool-stuff.beef',
+    html_url: 'http://cool-stuff.beef',
     extraneous: 'metametametadata',
     files: [
       {
@@ -24,7 +24,7 @@ var commits = [
   },
   {
     sha: 'a5d3',
-    url: 'http://butts.butt',
+    html_url: 'http://butts.butt',
     files: [
       {
         name: 'butt.php',
@@ -34,7 +34,7 @@ var commits = [
   },
   {
     sha: '7896',
-    url: 'http://github.com/commits/this-one',
+    html_url: 'http://github.com/commits/this-one',
     files: [
       {
         name: 'SmRotatingColoredBarsController.m',
@@ -107,7 +107,7 @@ test('Get sample commit stream', function sampleCommitStreamTest(t) {
 
       sampleCommitStream.on('data', function checkCommitSummary(summary) {
         t.equal(summary.sha, commits[summaryIndex].sha, 'SHA is correct.');
-        t.equal(summary.url, commits[summaryIndex].url, 'URL is correct.');
+        t.equal(summary.url, commits[summaryIndex].html_url, 'URL is correct.');
         t.deepEqual(
           summary.patches, 
           expectedSummaryPatches[summaryIndex],

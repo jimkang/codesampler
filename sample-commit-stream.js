@@ -85,7 +85,7 @@ function createCommitSummary(commit) {
 
   return {
     sha: commit.sha,
-    url: commit.url,
+    url: commit.html_url,
     patches: formattedPatches
   };
 }
