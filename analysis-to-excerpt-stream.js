@@ -26,7 +26,7 @@ function createAnalysisToTweetExcerptStream(opts) {
       var excerpt = excerptPicker(analysis);
       if (excerpt) {
         this.push(tweetTruncate({
-          text: excerptPicker(analysis),
+          text: excerpt,
           delimiter: '\n',
           urlsToAdd: [
             analysis.url
