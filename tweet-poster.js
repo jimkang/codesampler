@@ -13,9 +13,10 @@ function createTweetPoster(opts) {
   var twit = new Twit(opts.twitterConfig);
 
   function postTweet(text) {
-    log('Would have tweeted:', text);
-
-    if (!opts.dryRun) {
+    if (opts.dryRun) {
+      log('Would have tweeted:', text);
+    }
+    else {
       twit.post(
         'statuses/update',
         {
@@ -27,7 +28,7 @@ function createTweetPoster(opts) {
             log('data:', data);
           }
           else {
-            log('Posted to Twitter.');
+            log('Posted to Twitter:', text);
           }
         }
       );
