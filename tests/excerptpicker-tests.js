@@ -81,11 +81,19 @@ test('Pick from analysis with only functions', function onlyFunctions(t) {
     }
   });
 
-  var excerpt = excerptPicker({
-    functions: testFunctions1
-  });
+  excerptPicker(
+    {
+      functions: testFunctions1
+    },
+    function checkExcerpt(error, excerpt) {
+      t.equal(
+        excerpt,
+        'function(active_calls_by_agent) {',
+        'Chooses an excerpt.'
+      );
+    }
+  );
 
-  t.equal(excerpt, 'function(active_calls_by_agent) {', 'Chooses an excerpt.');
 });
 
 test('Pick from analysis with only comments', function onlyComments(t) {
@@ -109,14 +117,17 @@ test('Pick from analysis with only comments', function onlyComments(t) {
     }
   });
 
-  var excerpt = excerptPicker({
-    comments: testComments
-  });
-
-  t.equal(
-    excerpt,
-    '\t// BufferedReader br = new BufferedReader(new FileReader(new\r',
-    'Chooses an excerpt.'
+  excerptPicker(
+    {
+      comments: testComments
+    },
+    function checkExcerpt(error, excerpt) {
+      t.equal(
+        excerpt,
+        '\t// BufferedReader br = new BufferedReader(new FileReader(new\r',
+        'Chooses an excerpt.'
+      );
+    }
   );
 });
 
@@ -153,10 +164,13 @@ test('Pick from analysis with functions and comments', function both(t) {
     }
   });
 
-  var excerpt = excerptPicker({
-    functions: testFunctions2,
-    comments: testComments
-  });
-
-  t.equal(excerpt, 'function(xml) {', 'Chooses an excerpt.');
+  excerptPicker(
+    {
+      functions: testFunctions2,
+      comments: testComments
+    },
+    function checkExcerpt(error, excerpt) {
+      t.equal(excerpt, 'function(xml) {', 'Chooses an excerpt.');
+    }
+  );
 });

@@ -1,5 +1,6 @@
 var defaultProbable = require('probable');
 var _ = require('lodash');
+var conformAsync = require('conform-async');
 
 function createExcerptPicker(opts) {
   var probable = defaultProbable;
@@ -8,7 +9,7 @@ function createExcerptPicker(opts) {
     probable = opts.probable;
   }
 
-  return function pickExcerptFromAnalysis(analysis) {
+  return function pickExcerptFromAnalysis(analysis, done) {
     var chosenExcerptType;
     var fns = analysis.functions;
     var comments = analysis.comments;
@@ -32,7 +33,7 @@ function createExcerptPicker(opts) {
       choices = _.uniq(comments);
     }
 
-    return probable.pickFromArray(choices);
+    conformAsync.callBackOnNextTick(done, null, probable.pickFromArray(choices));
   }
 }
 

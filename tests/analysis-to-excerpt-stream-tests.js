@@ -6,8 +6,10 @@ test('Post packages', function postPackages(t) {
   t.plan(3);
 
   var tweetStream = createAnalysisToExcerptStream({
-    excerptPicker: function pickFunction(analysis) {
-      return '`' + analysis.functions[0] + '`';
+    excerptPicker: function pickFunction(analysis, done) {
+      conformAsync.callBackOnNextTick(
+        done, null, '`' + analysis.functions[0] + '`'
+      );
     }
   });
 
