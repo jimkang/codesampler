@@ -17,7 +17,7 @@ test('Post excerpts', function postExcerpts(t) {
       if (!receivedExcerptData && excerpt && excerpt.length > 0) {
         receivedExcerptData = true;
       }
-      console.log(excerpt);
+      console.log('Excerpt:', excerpt);
     });
 
     excerptStream.on('end', function onEnd() {

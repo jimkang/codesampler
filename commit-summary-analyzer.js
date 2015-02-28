@@ -17,7 +17,7 @@ var functionRegexes = [
 
 function createCommitSummaryAnalyzer(opts) {
   function analyze(commitSummary, done) {
-    var analysis = {};
+    var analysis = _.pick(commitSummary, 'sha', 'url');
 
     var comments = findInPatches(commitSummary, commentRegexes);
     var functions = findInPatches(commitSummary, functionRegexes);
