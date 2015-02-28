@@ -1,11 +1,11 @@
-var createAnalysisToTweetPackageStream = require('../analysis-to-tweet-package-stream').create;
+var createAnalysisToExcerptStream = require('../analysis-to-excerpt-stream').create;
 var test = require('tape');
 var conformAsync = require('conform-async');
 
 test('Post packages', function postPackages(t) {
   t.plan(3);
 
-  var tweetStream = createAnalysisToTweetPackageStream({
+  var tweetStream = createAnalysisToExcerptStream({
     excerptPicker: function pickFunction(analysis) {
       return '`' + analysis.functions[0] + '`';
     }

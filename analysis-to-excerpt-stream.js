@@ -1,7 +1,7 @@
 var through2 = require('through2');
 var tweetTruncate = require('tweet-truncate');
 
-function createAnalysisToTweetPackageStream(opts) {
+function createAnalysisToTweetExcerptStream(opts) {
   var excerptPicker;
   var log;
 
@@ -15,7 +15,7 @@ function createAnalysisToTweetPackageStream(opts) {
   }
 
   if (!excerptPicker) {
-    throw new Error('No excerptPicker given to analysisToTweetPackageStream.');
+    throw new Error('No excerptPicker given to analysisToTweetExcerptStream.');
   }
 
   return through2(
@@ -42,5 +42,5 @@ function createAnalysisToTweetPackageStream(opts) {
 }
 
 module.exports = {
-  create: createAnalysisToTweetPackageStream
+  create: createAnalysisToTweetExcerptStream
 };

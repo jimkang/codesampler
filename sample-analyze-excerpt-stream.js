@@ -1,13 +1,13 @@
 var createSampleCommitStream = require('./sample-commit-stream').create;
 var createSummaryAnalyzer = require('./commit-summary-analyzer').create;
-var createAnalysisToTweetPackageStream = require('./analysis-to-tweet-package-stream').create;
+var createAnalysisToExcerptStream = require('./analysis-to-excerpt-stream').create;
 var seedrandom = require('seedrandom');
 var createProbable = require('probable').createProbable;
 var createExcerptPicker = require('./excerptpicker').create;
 
 var createAnalysisStream = createSummaryAnalyzer().createAnalysisStream;
 
-function createSampleAnalyzePackageStream(done) {
+function createSampleAnalyzeExcerptStream(done) {
   var probable = createProbable({
     random: seedrandom((new Date).getTime().toString())
   });
@@ -15,7 +15,7 @@ function createSampleAnalyzePackageStream(done) {
     probable: probable
   });
 
-  var packageStream = createAnalysisToTweetPackageStream({
+  var excerptStream = createAnalysisToExcerptStream({
     excerptPicker: excerptPicker,
     log: console.log
   });
@@ -28,12 +28,12 @@ function createSampleAnalyzePackageStream(done) {
     }
     else {
       sampleCommitStream.pipe(analysisStream);
-      analysisStream.pipe(packageStream);
-      done(null, packageStream);
+      analysisStream.pipe(excerptStream);
+      done(null, excerptStream);
     }
   });
 }
 
 module.exports = {
-  create: createSampleAnalyzePackageStream
+  create: createSampleAnalyzeExcerptStream
 };
