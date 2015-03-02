@@ -38,6 +38,8 @@ function createExcerptPicker(opts) {
     else {
       choices = _.uniq(comments);
     }
+
+    var choice;
     
     if (excerptFilter) {
       excerptFilter(choices, function pickFromFiltered(error, filteredChoices) {
@@ -45,14 +47,14 @@ function createExcerptPicker(opts) {
           done(error);
         }
         else {
-          done(null, probable.pickFromArray(filteredChoices));
+          choice = probable.pickFromArray(filteredChoices);
+          done(null, choice);
         }
       });
     }
     else {
-      conformAsync.callBackOnNextTick(
-        done, null, probable.pickFromArray(choices)
-      );
+      choice = probable.pickFromArray(choices);
+      conformAsync.callBackOnNextTick(done, null, choice);
     }
   }
 }
