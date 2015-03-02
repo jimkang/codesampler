@@ -16,18 +16,26 @@ test('Post packages', function postPackages(t) {
 
   var receivedPackageCount = 0;
 
-  tweetStream.on('data', function onData(text) {
+  tweetStream.on('data', function onData(excerpt) {
     if (receivedPackageCount === 0) {
-      t.equal(
-        text,
-        '`function validateEmailAddress (emailAddress) {`\nhttp://zombo.com',
+      t.deepEqual(
+        excerpt,
+        {
+          text: '`function validateEmailAddress (emailAddress) {`\nhttp://zombo.com',
+          code: '`function validateEmailAddress (emailAddress) {`',
+          url: 'http://zombo.com'
+        },
         'Received package from analysis.'
       );
     }
     else {
-      t.equal(
-        text,
-        '`function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on…\nhttp://realultimatepower.net',
+      t.deepEqual(
+        excerpt,
+        {
+          text: '`function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on…\nhttp://realultimatepower.net',
+          code: '`function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and one and on and on till the brink of dawn) {`',
+          url: 'http://realultimatepower.net',
+        },
         'Received package from analysis.'
       );
     }

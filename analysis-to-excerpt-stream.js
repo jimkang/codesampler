@@ -25,24 +25,29 @@ function createAnalysisToTweetExcerptStream(opts) {
     function truncateTextToTweetSize(analysis, enc, callback) {
       var stream = this;
 
-      function truncateAndPush(error, excerpt) {
-
+      function truncateAndPush(error, selectedCode) {
         if (error) {
           log('Error in analysisToTweetExcerptStream:', error, error.stack);
         }
-        else if (!excerpt) {
+        else if (!selectedCode) {
           log('No excerpt found in analysis:', analysis);
         }
         else {
-          stream.push(tweetTruncate({
-            text: excerpt,
+          var truncatedText = tweetTruncate({
+            text: selectedCode,
             delimiter: '\n',
             urlsToAdd: [
               analysis.url
             ]
-          }));
+          });
+
+          stream.push({
+            text: truncatedText,
+            code: selectedCode,
+            url: analysis.url
+          });
         }
-        callback();        
+        callback();
       }
 
       excerptPicker(analysis, truncateAndPush);
