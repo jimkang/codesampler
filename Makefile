@@ -1,5 +1,7 @@
-#HOMEDIR = /var/www/codesampler
-HOMEDIR = ~/gcw/codesampler
+HOMEDIR = /var/www/codesampler
+#HOMEDIR = ~/gcw/codesampler
+GITDIR = /var/repos/codesampler.git
+
 PM2 = $(HOMEDIR)/node_modules/pm2/bin/pm2
 
 test:
@@ -28,3 +30,14 @@ stop-sampledcode-chronicler:
 
 check-processes:
 	$(PM2) list
+
+npm-install:
+	cd $(HOMEDIR)
+	npm install
+	npm prune
+
+sync-worktree-to-git:
+	git --work-tree=$(HOMEDIR) --git-dir=$(GITDIR) checkout -f
+
+post-receive: sync-worktree-to-git npm-install stop-sampledcode-chronicler \
+	start-sampledcode-chronicler
