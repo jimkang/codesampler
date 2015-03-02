@@ -28,7 +28,14 @@ function postAndRecord(excerpt) {
   }
 }
 
-createSampleAnalyzeExcerptStream(function done(error, excerptStream) {
+createSampleAnalyzeExcerptStream(
+  {
+    db: db
+  },
+  setUpStreamHandlers
+);
+
+function setUpStreamHandlers(error, excerptStream) {
   if (error) {
     console.log(error, error.stack);
     return;
@@ -40,4 +47,4 @@ createSampleAnalyzeExcerptStream(function done(error, excerptStream) {
     db.close();
     console.log('codesampler run completed.');
   });
-});
+}

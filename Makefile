@@ -10,7 +10,7 @@ test:
 	node tests/excerptpicker-tests.js
 	node tests/already-used-filter-tests.js
 
-test-integration:
+test-integration: start-sampledcode-chronicler
 	node tests/integration/sample-analyze-excerpt-tests.js
 
 run: start-sampledcode-chronicler

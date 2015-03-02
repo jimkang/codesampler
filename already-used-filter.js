@@ -17,6 +17,9 @@ function createAlreadyUsedFilter(opts) {
       if (error) {
         console.log(error, error.stack);
       }
+      if (wasUsed) {
+        console.log('Filtering already used code:', codeText);
+      }
       done(error, wasUsed ? undefined : codeText);
     });
   }

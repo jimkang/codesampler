@@ -1,11 +1,20 @@
 var createSampleAnalyzeExcerptStream = require('../../sample-analyze-excerpt-stream').create;
 var test = require('tape');
 var conformAsync = require('conform-async');
+var chroniclerclient = require('../../chroniclerclient');
 
 test('Post excerpts', function postExcerpts(t) {
   t.plan(1);
+  var db = chroniclerclient.getDb();
 
-  createSampleAnalyzeExcerptStream(function done(error, excerptStream) {
+  createSampleAnalyzeExcerptStream(
+    {
+      db: db
+    },
+    done
+  );
+
+  function done(error, excerptStream) {
     if (error) {
       console.log(error, error.stack);
       return;
@@ -14,14 +23,16 @@ test('Post excerpts', function postExcerpts(t) {
     var receivedExcerptData = false;
 
     excerptStream.on('data', function onData(excerpt) {
-      if (!receivedExcerptData && excerpt && excerpt.length > 0) {
+      if (!receivedExcerptData && excerpt && excerpt.text.length > 0) {
         receivedExcerptData = true;
       }
       console.log('Excerpt:', excerpt);
     });
 
     excerptStream.on('end', function onEnd() {
+      db.close();
       t.ok(receivedExcerptData, 'Received excerpt data.');
     });
-  });
+  }
 });
+
