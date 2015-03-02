@@ -12,7 +12,7 @@ function createTweetPoster(opts) {
 
   var twit = new Twit(opts.twitterConfig);
 
-  function postTweet(text) {
+  function postTweet(text, done) {
     if (opts.dryRun) {
       log('Would have tweeted:', text);
     }
@@ -22,7 +22,7 @@ function createTweetPoster(opts) {
         {
           status: text
         },
-        function done(twitterError, data, response) {
+        function tweetDone(twitterError, data, response) {
           if (twitterError) {
             log(twitterError);
             log('data:', data);
@@ -30,6 +30,7 @@ function createTweetPoster(opts) {
           else {
             log('Posted to Twitter:', text);
           }
+          done(twitterError);
         }
       );
     }

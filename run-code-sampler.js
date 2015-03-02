@@ -1,6 +1,9 @@
 var config = require('./config');
 var createTweetPoster = require('./tweet-poster').create;
 var createSampleAnalyzeExcerptStream = require('./sample-analyze-excerpt-stream').create;
+var chroniclerclient = require('./chroniclerclient');
+
+var db = chroniclerclient.getDb();
 
 var dryRun = false;
 
@@ -13,15 +16,28 @@ var postTweet = createTweetPoster({
   dryRun: dryRun
 });
 
+function postAndRecord(excerpt) {
+  postTweet(excerpt.text, postDone);
+
+  function postDone(error) {
+    if (!error) {
+      db.recordThatTopicWasUsedInTribute(excerpt.code, function done() {
+        console.log('Recorded use of ', excerpt.code);
+      });
+    }
+  }
+}
+
 createSampleAnalyzeExcerptStream(function done(error, excerptStream) {
   if (error) {
     console.log(error, error.stack);
     return;
   }
 
-  excerptStream.on('data', postTweet);
+  excerptStream.on('data', postAndRecord);
 
   excerptStream.on('end', function onEnd() {
-    console.log('codesampler run completed.')
+    db.close();
+    console.log('codesampler run completed.');
   });
 });
