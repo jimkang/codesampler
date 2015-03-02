@@ -8,6 +8,7 @@ test:
 	node tests/analysis-tests.js
 	node tests/analysis-to-excerpt-stream-tests.js
 	node tests/excerptpicker-tests.js
+	node tests/already-used-filter-tests.js
 
 test-integration:
 	node tests/integration/sample-analyze-excerpt-tests.js
