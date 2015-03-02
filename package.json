@@ -10,7 +10,12 @@
     "type": "git",
     "url": "git@github.com:jimkang/codesampler.git"
   },
-  "keywords": [],
+  "keywords": [
+    "bot",
+    "github",
+    "twitter",
+    "code"
+  ],
   "author": "Jim Kang",
   "license": "MIT",
   "bugs": {
