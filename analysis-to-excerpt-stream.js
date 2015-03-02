@@ -30,7 +30,7 @@ function createAnalysisToTweetExcerptStream(opts) {
           log('Error in analysisToTweetExcerptStream:', error, error.stack);
         }
         else if (!selectedCode) {
-          log('No excerpt found in analysis:', analysis);
+          // log('No excerpt found in analysis:', analysis);
         }
         else {
           var truncatedText = tweetTruncate({
