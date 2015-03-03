@@ -1,32 +1,19 @@
 var conformAsync = require('conform-async');
 var _ = require('lodash');
 var through2 = require('through2');
-
-var commentRegexes = [
-  /[^https*:]\/\/.*[^\n]+/g, // C-style
-  // /#.*[^\n]+/g // Python, shell.
-];
-
-// TODO: Pure regexes are not a good way to find comments.
-
-var functionRegexes = [
-  /function\s*.*\(.*\).*[^\n]/g, // JS
-  /fn\s*.*\(.*\).*[^\n]/g, // Rust
-  /func\s*.*\(.*\).*[^\n]/g, // Swift
-];
+var codefeatures = require('./codefeatures');
 
 function createCommitSummaryAnalyzer(opts) {
   function analyze(commitSummary, done) {
     var analysis = _.pick(commitSummary, 'sha', 'url');
 
-    var comments = findInPatches(commitSummary, commentRegexes);
-    var functions = findInPatches(commitSummary, functionRegexes);
-
-    if (comments && comments.length > 0) {
-      analysis.comments = comments;
-    }
-    if (functions && functions.length > 0) {
-      analysis.functions = functions;
+    for (feature in codefeatures.identifiers) {
+      var instances = findInPatches(
+        commitSummary, codefeatures.identifiers[feature].regexes
+      );
+      if (instances.length > 0) {
+        analysis[feature] = instances;
+      }
     }
 
     conformAsync.callBackOnNextTick(done, null, analysis);
