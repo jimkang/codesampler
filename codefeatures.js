@@ -2,6 +2,7 @@ var identifiers = {
   comments: {
     regexes: [
       /[^https*:]\/\/.*[^\n]+/g, // C-style
+      /""".*"""/g, // Long Python comments
       // /#.*[^\n]+/g // Python, shell.
     ]
   },
