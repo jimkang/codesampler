@@ -103,7 +103,7 @@ test('Function finding', function functionFinding(t) {
 });
 
 test('Analysis stream', function testAnalysisStream(t) {
-  t.plan(5);
+  t.plan(7);
 
   var commitSummaries = [
     {
@@ -118,6 +118,13 @@ test('Analysis stream', function testAnalysisStream(t) {
       url: 'http://b.two',
       patches: [
         '@@ -63,15 +63,11 @@ pub fn write_stream<T: Stream>(stream: &mut BufferedStream<T>, data: &Vec<u8>) {\n     let fin = 0b1 << 15;        // FIN frame\n     let opcode = 0b0001 << 8;   // text mode\n     let mask = 0b0 << 7;        // no mask\n-    let payload_len = if data.len() <= 125 {\n-        // case: 7-bit data length will suffice\n-        data.len()\n-    } else if data.len() > 2.pow(16) {\n-        // case: 64-bit data length\n-        127\n-    } else {\n-        // case: 16-bit data length\n-        126\n+\n+    let payload_len = match data.len() {\n+        l if l <= 125 => l,\n+        l if l > 2.pow(16) => 127,\n+        _ => 126,\n     } as u16;\n'
+      ]
+    },    
+    {
+      sha: 'python code',
+      url: 'http://c',
+      patches: [
+        '@@ -62,15 +63,21 @@ +    def copy(self):\n+        d = {}\n+        for att in (\n+                \'deck\',\n+                \'idx\',\n+                \'ud\',\n+                \'foreground_source\',\n+                \'foreground_color\',\n+                \'foreground_image\',\n+                \'foreground_texture\',\n+                \'background_source\',\n+                \'background_color\',\n+                \'background_image\',\n+                \'background_texture\',\n+                \'outline_color\',\n+                \'content_outline_color\',\n+                \'foreground_outline_color\',\n+                \'art_outline_color\',\n+                \'art_source\',\n+                \'art_color\',\n+                \'art_image\',\n+                \'art_texture\',\n+                \'show_art\',\n+                \'headline_text\',\n+                \'headline_markup\',\n+                \'headline_font_name\',\n+                \'headline_font_size\',\n+                \'headline_color\',\n+                \'midline_text\',\n+                \'midline_markup\',\n+                \'midline_font_name\',\n+                \'midline_font_size\',\n+                \'midline_color\',\n+                \'footer_text\',\n+                \'footer_markup\',\n+                \'footer_font_name\',\n+                \'footer_font_size\',\n+                \'footer_color\',\n+                \'text\',\n+                \'text_color\',\n+                \'markup\',\n+                \'font_name\',\n+                \'font_size\'\n+        ):\n+            v = getattr(self, att)\n+            if v is not None:\n+                d[att] = v\n+        return Card(**d)\n+'
       ]
     }
   ];
@@ -139,10 +146,15 @@ test('Analysis stream', function testAnalysisStream(t) {
        ' // case: 16-bit data length'
       ],
       functions: [
-        'fn write_stream<T: Stream>(stream: &mut BufferedStream<T>, data: &Vec<u8>) {'      
+        'fn write_stream<T: Stream>(stream: &mut BufferedStream<T>, data: &Vec<u8>) {',
       ]
     },
-  
+    {
+      comments: undefined,
+      functions: [
+        'def copy(self):'
+      ]
+    }  
   ];
 
   var streamIndex = 0;

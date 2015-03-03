@@ -10,6 +10,7 @@ var identifiers = {
       /function\s*.*\(.*\).*[^\n]/g, // JS
       /fn\s*.*\(.*\).*[^\n]/g, // Rust
       /func\s*.*\(.*\).*[^\n]/g, // Swift
+      /def\s\w+\(.*\):/g // Python
     ]
   }
 };
