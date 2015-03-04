@@ -173,6 +173,37 @@ test('Assignment finding', function assignmentFinding(t) {
   });
 });
 
+test('Class finding', function classFinding(t) {
+  t.plan(2);
+
+  var commitSummary = {
+    sha: 'commit-with-log',
+    url: 'https://github.com/something-something',
+    patches: [
+      '@@ -186,4 +186,86 @@ class Entity {\n',
+      '@@ -63,15 +63,11 @@ function classify() {;\n',
+      '@@ -228,6 +230,12 @@ struct Vertices {\n',
+      '@@ -1,2 -3,4 @@ class RubyClass\n',
+      '@@ -228,6 +230,12 @@ class Beef : public Meat {\n',
+    ]
+  };
+
+  var analyzer = createCommitSummaryAnalyzer();
+  analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
+    t.ok(!error, 'Analyze does not give an error.');
+    t.deepEqual(
+      analysis.classes,
+      [
+        'class Entity {',
+        'struct Vertices {',
+        'class RubyClass',
+        'class Beef : public Meat {'
+      ],
+      'Analysis captures classes.'
+    );
+  });
+});
+
 
 test('Analysis stream', function testAnalysisStream(t) {
   t.plan(7);
