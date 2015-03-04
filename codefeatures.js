@@ -22,6 +22,11 @@ var identifiers = {
       /stderr.write\(.*\)/g, // Node
       /debug\(.*\)/g, // Misc.
     ]
+  },
+  assignments: {
+    regexes: [
+      /((var|int|char)\s*)*\w(\w|\d)*\s*=[^=]\s*[\w\d\[\]\'"]+/g
+    ]
   }
 };
 
@@ -29,7 +34,8 @@ var featureProbabilities = {
   comments: 30,
   functions: 40,
   // Prefer this if it actually is present, which it usually isn't.
-  logStatements: 200
+  logStatements: 200,
+  assignments: 5
 };
 
 module.exports = {

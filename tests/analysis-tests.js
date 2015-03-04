@@ -139,6 +139,41 @@ test('Log finding', function logFinding(t) {
   });
 });
 
+test('Assignment finding', function assignmentFinding(t) {
+  t.plan(2);
+
+  var commitSummary = {
+    sha: 'commit-with-log',
+    url: 'https://github.com/something-something',
+    patches: [
+      '@@ -186,4 +186,86 @@ var users = [];\n',
+      '@@ -63,15 +63,11 @@ var a = 1, b = 2, c = 3;\n',
+      '@@ -228,6 +230,12 @@ int n = 666; char c = \'c\';\n',
+      '@@ -1,2 -3,4 @@ if (n == 5)',
+      '@@ -228,6 +230,12 @@ x = 10000\n',
+    ]
+  };
+
+  var analyzer = createCommitSummaryAnalyzer();
+  analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
+    t.ok(!error, 'Analyze does not give an error.');
+    t.deepEqual(
+      analysis.assignments,
+      [
+        'var users = []',
+        'var a = 1',
+        'b = 2',
+        'c = 3',
+        'int n = 666',
+        'char c = \'c\'',
+        'x = 10000'
+      ],
+      'Analysis captures assignments.'
+    );
+  });
+});
+
+
 test('Analysis stream', function testAnalysisStream(t) {
   t.plan(7);
 
