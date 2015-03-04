@@ -1,42 +1,47 @@
-var defaultProbable = require('probable');
+var probable = require('probable');
 var _ = require('lodash');
 var conformAsync = require('conform-async');
+var featureProbabilities = require('./codefeatures').featureProbabilities;
 
 function createExcerptPicker(opts) {
-  var probable = defaultProbable;
+  var createRangeTableFromDict = probable.createRangeTableFromDict;
+  var pickFromArray = probable.pickFromArray;
   var excerptFilter;
 
   if (opts) {
-    if (opts.probable) {
-      probable = opts.probable;
+    if (opts.createRangeTableFromDict) {
+      createRangeTableFromDict = opts.createRangeTableFromDict;
     }
     if (opts.excerptFilter) {
       excerptFilter = opts.excerptFilter;
+    }
+    if (opts.pickFromArray) {
+      pickFromArray = opts.pickFromArray;
     }
   }
   
   return function pickExcerptFromAnalysis(analysis, done) {
     var chosenExcerptType;
-    var fns = analysis.functions;
-    var comments = analysis.comments;
     var choices;
 
-    if (fns && comments) {
-      chosenExcerptType = probable.pickFromArray(['fns', 'comments']);
-    }
-    else if (fns) {
-      chosenExcerptType = 'fns';
-    }
-    else {
-      chosenExcerptType = 'comments';
+    var presentFeatures = _.intersection(
+      Object.keys(analysis), Object.keys(featureProbabilities)
+    );
+
+    if (presentFeatures.length < 1) {
+      conformAsync.callBackOnNextTick(done, null, null);
+      return;
     }
 
-    if (chosenExcerptType === 'fns') {
-      choices = _.uniq(fns);
+    var featureTable = createRangeTableFromDict(
+      _.pick.apply(_, [featureProbabilities].concat(presentFeatures))
+    );
+
+    var chosenExcerptType = featureTable.roll();
+    choices = _.uniq(analysis[chosenExcerptType]);
+
+    if (chosenExcerptType === 'functions') {
       choices = choices.filter(filterBoringFunctions);
-    }
-    else {
-      choices = _.uniq(comments);
     }
 
     var choice;
@@ -47,13 +52,13 @@ function createExcerptPicker(opts) {
           done(error);
         }
         else {
-          choice = probable.pickFromArray(filteredChoices);
+          choice = pickFromArray(filteredChoices);
           done(null, choice);
         }
       });
     }
     else {
-      choice = probable.pickFromArray(choices);
+      choice = pickFromArray(choices);
       conformAsync.callBackOnNextTick(done, null, choice);
     }
   }
