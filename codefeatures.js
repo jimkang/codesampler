@@ -32,6 +32,12 @@ var identifiers = {
     regexes: [
       /(class|struct)\s+\w[\w\d-]*.*{*/g
     ]
+  },
+  controlFlow: {
+    regexes: [
+      /(if|while|for)[\s|\(].*\n/g,
+      /\w[\w\d_]*\.(forEach|map|reduce).*\n/g
+    ]
   }
 };
 
@@ -41,7 +47,8 @@ var featureProbabilities = {
   // Prefer this if it actually is present, which it usually isn't.
   logStatements: 200,
   // assignments: 5,
-  classes: 30
+  classes: 30,
+  controlFlow: 5
 };
 
 module.exports = {
