@@ -19,11 +19,12 @@ function createExcerptPicker(opts) {
       pickFromArray = opts.pickFromArray;
     }
   }
+
+  function getCodeFromExcerpt(excerpt) {
+    return excerpt.code;
+  }
   
   return function pickExcerptFromAnalysis(analysis, done) {
-    var chosenExcerptType;
-    var choices;
-
     var presentFeatures = _.intersection(
       Object.keys(analysis), Object.keys(featureProbabilities)
     );
@@ -38,11 +39,12 @@ function createExcerptPicker(opts) {
     );
 
     var chosenExcerptType = featureTable.roll();
-    choices = _.uniq(analysis[chosenExcerptType]);
-
-    if (chosenExcerptType === 'functions') {
-      choices = choices.filter(filterBoringFunctions);
-    }
+    var excerpts = analysis[chosenExcerptType];
+    var choices = _.uniq(excerpts, false, getCodeFromExcerpt);
+    debugger;
+    // if (chosenExcerptType === 'functions') {
+    //   choices = choices.filter(filterBoringFunctions);
+    // }
 
     var choice;
     
@@ -63,18 +65,6 @@ function createExcerptPicker(opts) {
     }
   }
 }
-
-function filterBoringFunctions(fn) {
-  var isOK = true;
-
-  if (fn.match(noParamAnonymousRegex)) {
-    isOK = false;
-  }
-
-  return isOK;
-}
-
-var noParamAnonymousRegex = /function\s*\(\s*\)/;
 
 module.exports = {
   create: createExcerptPicker

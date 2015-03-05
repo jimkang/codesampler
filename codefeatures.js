@@ -8,9 +8,9 @@ var identifiers = {
   },
   functions: {
     regexes: [
-      /function\s*.*\(.*\).*[^\n]/g, // JS
+      /function\s*\w[\w\d_].*\(.*[^\n]/g, // JS
       /fn\s*.*\(.*\).*[^\n]/g, // Rust
-      /func\s*.*\(.*\).*[^\n]/g, // Swift
+      /func[^tion]\s*.*\(.*\).*[^\n]/g, // Swift
       /def\s\w+\(.*\):/g // Python
     ]
   },

@@ -22,19 +22,19 @@ test('Filter out used choices', function filterUsed(t) {
 
   filter(
     [
-      'func something(bulbabulba) {',
-      'function (d) {',
-      'function done(error, result) {',
-      'fn helloWorld(d)',
-      'function (event) {'      
+      {code: 'func something(bulbabulba) {'},
+      {code: 'function (d) {'},
+      {code: 'function done(error, result) {'},
+      {code: 'fn helloWorld(d)'},
+      {code: 'function (event) {'     } 
     ],
     function done(error, filtered) {
       t.deepEqual(
         filtered,
         [
-          'func something(bulbabulba) {',
-          'function (d) {',
-          'fn helloWorld(d)'
+          {code: 'func something(bulbabulba) {'},
+          {code: 'function (d) {'},
+          {code: 'fn helloWorld(d)'}
         ]
       );
     }

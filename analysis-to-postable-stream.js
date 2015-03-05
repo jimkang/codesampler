@@ -1,7 +1,7 @@
 var through2 = require('through2');
 var tweetTruncate = require('tweet-truncate');
 
-function createAnalysisToTweetExcerptStream(opts) {
+function createAnalysisToTweetPostableStream(opts) {
   var excerptPicker;
   var log = function noOp() {};
  
@@ -25,16 +25,17 @@ function createAnalysisToTweetExcerptStream(opts) {
     function truncateTextToTweetSize(analysis, enc, callback) {
       var stream = this;
 
-      function truncateAndPush(error, selectedCode) {
+      function truncateAndPush(error, excerpt) {
         if (error) {
           log('Error in analysisToTweetExcerptStream:', error, error.stack);
         }
-        else if (!selectedCode) {
+        else if (!excerpt) {
           // log('No excerpt found in analysis:', analysis);
         }
         else {
+          debugger;
           var truncatedText = tweetTruncate({
-            text: selectedCode,
+            text: excerpt.code,
             delimiter: '\n',
             urlsToAdd: [
               analysis.url
@@ -43,18 +44,19 @@ function createAnalysisToTweetExcerptStream(opts) {
 
           stream.push({
             text: truncatedText,
-            code: selectedCode,
+            code: excerpt.code,
             url: analysis.url
           });
         }
         callback();
       }
 
+      debugger;
       excerptPicker(analysis, truncateAndPush);
     }
   );
 }
 
 module.exports = {
-  create: createAnalysisToTweetExcerptStream
+  create: createAnalysisToTweetPostableStream
 };

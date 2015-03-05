@@ -1,6 +1,6 @@
 var createSampleCommitStream = require('./sample-commit-stream').create;
 var createSummaryAnalyzer = require('./commit-summary-analyzer').create;
-var createAnalysisToExcerptStream = require('./analysis-to-excerpt-stream').create;
+var createAnalysisToPostableStream = require('./analysis-to-postable-stream').create;
 var seedrandom = require('seedrandom');
 var createProbable = require('probable').createProbable;
 var createExcerptPicker = require('./excerptpicker').create;
@@ -28,7 +28,7 @@ function createSampleAnalyzeExcerptStream(opts, done) {
     })
   });
 
-  var excerptStream = createAnalysisToExcerptStream({
+  var postableStream = createAnalysisToPostableStream({
     excerptPicker: excerptPicker,
     log: console.log
   });
@@ -41,8 +41,8 @@ function createSampleAnalyzeExcerptStream(opts, done) {
     }
     else {
       sampleCommitStream.pipe(analysisStream);
-      analysisStream.pipe(excerptStream);
-      done(null, excerptStream);
+      analysisStream.pipe(postableStream);
+      done(null, postableStream);
     }
   });
 }

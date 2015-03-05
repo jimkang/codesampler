@@ -3,37 +3,34 @@ var createExcerptPicker = require('../excerptpicker').create;
 var _ = require('lodash');
 var conformAsync = require('conform-async');
 
+function createAnalysisWithCode(code) {
+  return {
+    code: code
+  };
+}
+
 var testComments = [
   '\t// BufferedReader br = new BufferedReader(new FileReader(new\r',
   '\t// File(DOCIDX)));\r',
   '\t// TODO Auto-generated catch block\r',
   '\t// TODO Auto-generated catch block\r'
-];
+]
+.map(createAnalysisWithCode);
 
 var testFunctions1 = [
-  'function() {',
-  'function() {',
   'function(active_calls_by_agent) {',
   'function(agent_name, call_duration) {',
-  'function() {',
-  'function() {',
-  'function() {',
   'function(active_calls_by_agent) {',
   'function(agent_name, call_duration) {',
-  'function() {'
-];
+]
+.map(createAnalysisWithCode);
 
 var testFunctions2 = [
-  'function() {',
   'function(xml) {',
   'function(xml) {',
   'function(xml) {',
-  'function() {',
-  'function() {',
   'function(xml) {',
   'function(xml) {',
-  'function() {',
-  'function() {',
   'function(calls, agents) {',
   'function(realtime, agents) {',
   'function(agent_id, call_duration) {',
@@ -42,16 +39,11 @@ var testFunctions2 = [
   'function(json) {',
   'function(agent_name, call_duration) {',
   'function(agent_id, info) {',
-  'function() {',
   'function(xml) {',
   'function(xml) {',
   'function(xml) {',
-  'function() {',
-  'function() {',
   'function(xml) {',
   'function(xml) {',
-  'function() {',
-  'function() {',
   'function(calls, agents) {',
   'function(realtime, agents) {',
   'function(agent_id, call_duration) {',
@@ -60,7 +52,8 @@ var testFunctions2 = [
   'function(json) {',
   'function(agent_name, call_duration) {',
   'function(agent_id, info) {'
-];
+]
+.map(createAnalysisWithCode);
 
 function mockCreateTableThatPicksFunctions() {
   return {
@@ -78,7 +71,7 @@ test('Pick from analysis with only functions', function onlyFunctions(t) {
       createRangeTableFromDict: mockCreateTableThatPicksFunctions,
       pickFromArray: function mockPickFromArray(array) {
         t.deepEqual(
-          array,
+          _.pluck(array, 'code'),
           [
             'function(active_calls_by_agent) {',
             'function(agent_name, call_duration) {',
@@ -96,7 +89,7 @@ test('Pick from analysis with only functions', function onlyFunctions(t) {
     },
     function checkExcerpt(error, excerpt) {
       t.equal(
-        excerpt,
+        excerpt.code,
         'function(active_calls_by_agent) {',
         'Chooses an excerpt.'
       );
@@ -119,7 +112,7 @@ test('Pick from analysis with only comments', function onlyComments(t) {
       },
       pickFromArray: function mockPickFromArray(array) {
         t.deepEqual(
-          array,
+          _.pluck(array, 'code'),
           [
             '\t// BufferedReader br = new BufferedReader(new FileReader(new\r',
             '\t// File(DOCIDX)));\r',
@@ -139,7 +132,7 @@ test('Pick from analysis with only comments', function onlyComments(t) {
     },
     function checkExcerpt(error, excerpt) {
       t.equal(
-        excerpt,
+        excerpt.code,
         '\t// BufferedReader br = new BufferedReader(new FileReader(new\r',
         'Chooses an excerpt.'
       );
@@ -155,7 +148,7 @@ test('Pick from analysis with functions and comments', function both(t) {
       createRangeTableFromDict: mockCreateTableThatPicksFunctions,
       pickFromArray: function mockPickFromArray(array) {
         t.deepEqual(
-          array,
+          _.pluck(array, 'code'),
           [
             'function(xml) {',
             'function(calls, agents) {',
@@ -181,7 +174,7 @@ test('Pick from analysis with functions and comments', function both(t) {
       comments: testComments
     },
     function checkExcerpt(error, excerpt) {
-      t.equal(excerpt, 'function(xml) {', 'Chooses an excerpt.');
+      t.equal(excerpt.code, 'function(xml) {', 'Chooses an excerpt.');
     }
   );
 });
@@ -193,14 +186,14 @@ test('Filter choices using specified filter', function filterUsed(t) {
     {
       excerptFilter: function isNotUsingAgentId(excerpts, done) {
         var filtered = excerpts.filter(function isNotUsingAgentId(excerpt) {
-          return excerpt.indexOf('agent_id') === -1;
+          return excerpt.code.indexOf('agent_id') === -1;
         });
         conformAsync.callBackOnNextTick(done, null, filtered);
       },
       createRangeTableFromDict: mockCreateTableThatPicksFunctions,
       pickFromArray: function mockPickFromArray(array) {
         t.deepEqual(
-          array,
+          _.pluck(array, 'code'),
           [
             'function(xml) {',
             'function(calls, agents) {',
@@ -223,7 +216,7 @@ test('Filter choices using specified filter', function filterUsed(t) {
       comments: testComments
     },
     function checkExcerpt(error, excerpt) {
-      t.equal(excerpt, 'function(xml) {', 'Chooses an excerpt.');
+      t.equal(excerpt.code, 'function(xml) {', 'Chooses an excerpt.');
     }
   );
 });

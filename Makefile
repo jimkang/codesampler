@@ -8,7 +8,7 @@ test:
 	node tests/commits-from-events-tests.js
 	node tests/sample-commit-stream-tests.js
 	node tests/analysis-tests.js
-	node tests/analysis-to-excerpt-stream-tests.js
+	node tests/analysis-to-postable-stream-tests.js
 	node tests/excerptpicker-tests.js
 	node tests/already-used-filter-tests.js
 

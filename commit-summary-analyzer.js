@@ -12,11 +12,17 @@ function createCommitSummaryAnalyzer(opts) {
         commitSummary, codefeatures.identifiers[feature].regexes
       );
       if (instances.length > 0) {
-        analysis[feature] = instances;
+        analysis[feature] = instances.map(createAnalysisWithCode);
       }
     }
 
     conformAsync.callBackOnNextTick(done, null, analysis);
+  }
+
+  function createAnalysisWithCode(code) {
+    return {
+      code: code
+    };
   }
 
   function findInPatches(commitSummary, regexes) {

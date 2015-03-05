@@ -1,15 +1,20 @@
-var createAnalysisToExcerptStream = require('../analysis-to-excerpt-stream').create;
+var createAnalysisToExcerptStream = require('../analysis-to-postable-stream').create;
 var test = require('tape');
 var conformAsync = require('conform-async');
+
+function createExcerptWithCode(code) {
+  return {
+    code: code
+  };
+}
 
 test('Post packages', function postPackages(t) {
   t.plan(3);
 
   var tweetStream = createAnalysisToExcerptStream({
     excerptPicker: function pickFunction(analysis, done) {
-      
       conformAsync.callBackOnNextTick(
-        done, null, '`' + analysis.functions[0] + '`'
+        done, null, analysis.functions[0]
       );
     }
   });
@@ -21,8 +26,8 @@ test('Post packages', function postPackages(t) {
       t.deepEqual(
         excerpt,
         {
-          text: '`function validateEmailAddress (emailAddress) {`\nhttp://zombo.com',
-          code: '`function validateEmailAddress (emailAddress) {`',
+          text: 'function validateEmailAddress (emailAddress) {\nhttp://zombo.com',
+          code: 'function validateEmailAddress (emailAddress) {',
           url: 'http://zombo.com'
         },
         'Received package from analysis.'
@@ -32,8 +37,8 @@ test('Post packages', function postPackages(t) {
       t.deepEqual(
         excerpt,
         {
-          text: '`function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on…\nhttp://realultimatepower.net',
-          code: '`function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and one and on and on till the brink of dawn) {`',
+          text: 'function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on …\nhttp://realultimatepower.net',
+          code: 'function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on and on and on till the brink of dawn) {',
           url: 'http://realultimatepower.net',
         },
         'Received package from analysis.'
@@ -55,6 +60,7 @@ test('Post packages', function postPackages(t) {
         "function(snap) {",
         "function(evt) {",
       ]
+      .map(createExcerptWithCode)
     }
   );
 
@@ -63,8 +69,9 @@ test('Post packages', function postPackages(t) {
       sha: 'yes',
       url: 'http://realultimatepower.net',
       functions: [
-        "function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and one and on and on till the brink of dawn) {",
+        "function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on and on and on till the brink of dawn) {",
       ]
+      .map(createExcerptWithCode)
     }
   );
 

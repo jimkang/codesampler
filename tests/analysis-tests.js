@@ -2,6 +2,7 @@ var test = require('tape');
 // var jsonfile = require('jsonfile');
 var createCommitSummaryAnalyzer = require('../commit-summary-analyzer').create;
 // var conformAsync = require('conform-async');
+var _ = require('lodash');
 
 test('Comment finding', function commentFinding(t) {
   t.plan(2);
@@ -20,7 +21,7 @@ test('Comment finding', function commentFinding(t) {
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
-      analysis.comments,
+      _.pluck(analysis.comments, 'code'),
       [
         " // Creating a paper button.",
         " // Creating uiBinder for polymer elements",
@@ -68,36 +69,18 @@ test('Function finding', function functionFinding(t) {
   };
 
   var analyzer = createCommitSummaryAnalyzer();
+  debugger;
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
-      analysis.functions,
+      _.pluck(analysis.functions, 'code'),
       [
         "function validateEmailAddress (emailAddress) {",
-        "function(snap) {",
-        "function(evt) {",
         "function likeUser(data, cb) {",
         "function findUmatched(data, uuid) {",
         "function matches(data, uuid) {",
-        "function(user, i) {",
         "function usersLikes(userData) {",
-        "function(user) {",
         "function usersDislikes(userData) {",
-        "function(user) {",
-        "function() {",
-        "function goToLoginPage() {",
-        "function validateEmailAddress (emailAddress) {",
-        "function(snap) {",
-        "function(evt) {",
-        "function likeUser(data, cb) {",
-        "function findUmatched(data, uuid) {",
-        "function matches(data, uuid) {",
-        "function(user, i) {",
-        "function usersLikes(userData) {",
-        "function(user) {",
-        "function usersDislikes(userData) {",
-        "function(user) {",
-        "function() {",
         "function goToLoginPage() {",
         'fn write_stream<T: Stream>(stream: &mut BufferedStream<T>, data: &Vec<u8>) {',
         'func TransportFor(config *Config) (http.RoundTripper, error) {'
@@ -126,7 +109,7 @@ test('Log finding', function logFinding(t) {
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
-      analysis.logStatements,
+      _.pluck(analysis.logStatements, 'code'),
       [
         'console.log(\'whut\')',
         'NSLog(veryLongVariableName);',
@@ -192,7 +175,7 @@ test('Class finding', function classFinding(t) {
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
-      analysis.classes,
+      _.pluck(analysis.classes, 'code'),
       [
         'class Entity {',
         'struct Vertices {',
@@ -224,7 +207,7 @@ test('Control flow finding', function controlFlowFinding(t) {
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
-      analysis.controlFlow,
+      _.pluck(analysis.controlFlow, 'code'),
       [
         'if (weAreCool) {\n',
         'if weAreCool \n',
@@ -257,7 +240,7 @@ test('Preprocessor finding', function preprocessorFinding(t) {
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
-      analysis.preprocessors,
+      _.pluck(analysis.preprocessors, 'code'),
       [
         '#ifdef _DEBUG\n',
         '#define __WIN2K__ 1\n',
@@ -296,7 +279,7 @@ test('Analysis stream', function testAnalysisStream(t) {
 
   var expectedAnalyses = [
     {
-      comments: undefined,
+      comments: [],
       functions: [
         'func TransportFor(config *Config) (http.RoundTripper, error) {'      
       ]
@@ -315,7 +298,7 @@ test('Analysis stream', function testAnalysisStream(t) {
       ]
     },
     {
-      comments: undefined,
+      comments: [],
       functions: [
         'def copy(self):'
       ]
@@ -329,12 +312,12 @@ test('Analysis stream', function testAnalysisStream(t) {
 
   analysisStream.on('data', function checkData(analysis) {
     t.deepEqual(
-      analysis.comments,
+      _.pluck(analysis.comments, 'code'),
       expectedAnalyses[streamIndex].comments,
       'The correct comments are in the analysis.'
     );
     t.deepEqual(
-      analysis.functions,
+      _.pluck(analysis.functions, 'code'),
       expectedAnalyses[streamIndex].functions,
       'The correct functions are in the analysis.'
     );

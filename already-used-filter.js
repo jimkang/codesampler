@@ -12,22 +12,24 @@ function createAlreadyUsedFilter(opts) {
     throw new Error('No db provided to createAlreadyUsedFilter.');
   }
 
-  function filterText(codeText, done) {
-    db.topicWasUsedInTribute(codeText, function checkResult(error, wasUsed) {
+  function filterText(excerpt, done) {
+    db.topicWasUsedInTribute(excerpt.code, checkResult);
+
+    function checkResult(error, wasUsed) {
       if (error) {
         console.log(error, error.stack);
       }
       if (wasUsed) {
-        console.log('Filtering already used code:', codeText);
+        console.log('Filtering already used code:', excerpt.code);
       }
-      done(error, wasUsed ? undefined : codeText);
-    });
+      done(error, wasUsed ? undefined : excerpt);
+    }
   }
 
-  return function filterOutAlreadyUsed(codeTexts, done) {
+  return function filterOutAlreadyUsed(excerpts, done) {
     var q = queue();
-    codeTexts.forEach(function queueFilter(codeText) {
-      q.defer(filterText, codeText);
+    excerpts.forEach(function queueFilter(excerpt) {
+      q.defer(filterText, excerpt);
     });
     q.awaitAll(function queueDone(error, filtered) {
       done(error, _.compact(filtered));
