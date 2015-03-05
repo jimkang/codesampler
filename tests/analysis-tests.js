@@ -69,7 +69,6 @@ test('Function finding', function functionFinding(t) {
   };
 
   var analyzer = createCommitSummaryAnalyzer();
-  debugger;
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(

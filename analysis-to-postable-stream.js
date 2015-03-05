@@ -33,7 +33,6 @@ function createAnalysisToTweetPostableStream(opts) {
           // log('No excerpt found in analysis:', analysis);
         }
         else {
-          debugger;
           var truncatedText = tweetTruncate({
             text: excerpt.code,
             delimiter: '\n',
@@ -51,7 +50,6 @@ function createAnalysisToTweetPostableStream(opts) {
         callback();
       }
 
-      debugger;
       excerptPicker(analysis, truncateAndPush);
     }
   );

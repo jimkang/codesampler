@@ -41,10 +41,6 @@ function createExcerptPicker(opts) {
     var chosenExcerptType = featureTable.roll();
     var excerpts = analysis[chosenExcerptType];
     var choices = _.uniq(excerpts, false, getCodeFromExcerpt);
-    debugger;
-    // if (chosenExcerptType === 'functions') {
-    //   choices = choices.filter(filterBoringFunctions);
-    // }
 
     var choice;
     
