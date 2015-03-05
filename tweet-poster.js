@@ -4,6 +4,8 @@ function createTweetPoster(opts) {
   var Twit = TwitModule;
   var log = console.log;
 
+  var localCodePostedCache = {};
+
   if (opts) {
     if (opts.log) {
       log = opts.log;
@@ -13,8 +15,12 @@ function createTweetPoster(opts) {
   var twit = new Twit(opts.twitterConfig);
 
   function postTweet(text, done) {
-    if (opts.dryRun) {
+    if (text in localCodePostedCache) {
+      log('Already posted in this run:', text);
+    }
+    else if (opts.dryRun) {
       log('Would have tweeted:', text);
+      localCodePostedCache[text] = true;
     }
     else {
       twit.post(
@@ -28,6 +34,7 @@ function createTweetPoster(opts) {
             log('data:', data);
           }
           else {
+            localCodePostedCache[text] = true;
             log('Posted to Twitter:', text);
           }
           done(twitterError);
