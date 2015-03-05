@@ -23,11 +23,11 @@ var identifiers = {
       /debug\(.*\)/g, // Misc.
     ]
   },
-  assignments: {
-    regexes: [
-      /((var|int|char)\s*)*\w(\w|\d)*\s*=[^=]\s*[\w\d\[\]\'"]+/g
-    ]
-  },
+  // assignments: {
+  //   regexes: [
+  //     /((var|int|char)\s*)*\w(\w|\d)*\s*=[^=]\s*[\w\d\[\]\'"]+/g
+  //   ]
+  // },
   classes: {
     regexes: [
       /(class|struct)\s+\w[\w\d-]*.*{*/g
@@ -40,7 +40,7 @@ var featureProbabilities = {
   functions: 40,
   // Prefer this if it actually is present, which it usually isn't.
   logStatements: 200,
-  assignments: 5,
+  // assignments: 5,
   classes: 30
 };
 
