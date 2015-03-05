@@ -37,14 +37,6 @@ function createCommitSummaryAnalyzer(opts) {
     return _.compact(regexes.reduce(findWithRegex, []));
   }
 
-  function findFunctionsInPatch(patch) {
-    function findFunctionsWithRegex(found, regex) {
-      return found.concat(patch.match(regex));
-    }
-
-    return _.compact(functionRegexes.reduce(findFunctionsWithRegex, []));
-  }
-
   function createAnalysisStream(opts) {
     var analysisStream = through2(
       {
