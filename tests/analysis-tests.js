@@ -240,6 +240,33 @@ test('Control flow finding', function controlFlowFinding(t) {
   });
 });
 
+test('Preprocessor finding', function preprocessorFinding(t) {
+  t.plan(2);
+
+  var commitSummary = {
+    sha: 'commit-with-log',
+    url: 'https://github.com/something-something',
+    patches: [
+      '@@ -186,4 +186,86 @@ x = y;\n#ifdef _DEBUG\n x = 10;\n#endif\n {\n',
+      '@@ -63,15 +63,11 @@ +    @@ -63,15 +63,11 @@ +    if ($handle = @fopen("$filepath/addresses.txt",\'r\')) {\n+      if (is_resource($handle)) {\n+        $addresses = array();\n+        while (($buffer = fgets($handle)) !== false) {\n+          list($country, $administrative_area, $sub_administrative_area, $locality, $dependent_locality, $postal_code, $thoroughfare, $premise, $sub_premise) = explode("\t", $buffer);\n+          $fields[] = array(\n+            \'country\' => ($country == \'NULL\') ? NULL : trim($country),\n+            \'administrative_area\' => ($administrative_area == \'NULL\') ? NULL : trim($administrative_area),\n+            \'sub_administrative_area\' => ($sub_administrative_area == \'NULL\') ? NULL : trim($sub_administrative_area),\n+            \'locality\' => ($locality == \'NULL\') ? NULL : trim($locality),\n+            \'dependent_locality\' => ($dependent_locality == \'NULL\') ? NULL : trim($dependent_locality),\n+            \'postal_code\' => ($postal_code == \'NULL\') ? NULL : trim($postal_code),\n+            \'thoroughfare\' => ($thoroughfare == \'NULL\') ? NULL : trim($thoroughfare),\n+            \'premise\' => ($premise == \'NULL\') ? NULL : trim($premise),\n+            \'sub_premise\' => ($sub_premise == \'NULL\') ? NULL : trim($sub_premise),\n+          );\n+        }\n+      }\n+      fclose($handle);\n+    }\n\'',
+      '@@ -186,4 +186,86 @@ #define __WIN2K__ 1\n',
+    ]
+  };
+
+  var analyzer = createCommitSummaryAnalyzer();
+  analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
+    t.ok(!error, 'Analyze does not give an error.');
+    t.deepEqual(
+      analysis.preprocessors,
+      [
+        '#ifdef _DEBUG\n',
+        '#define __WIN2K__ 1\n',
+      ],
+      'Analysis captures preprocessor statements.'
+    );
+  });
+});
+
 test('Analysis stream', function testAnalysisStream(t) {
   t.plan(7);
 

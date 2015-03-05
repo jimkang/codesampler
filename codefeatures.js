@@ -38,6 +38,11 @@ var identifiers = {
       /(if|while|for)[\s|\(].*\n/g,
       /\w[\w\d_]*\.(forEach|map|reduce).*\n/g
     ]
+  },
+  preprocessors: {
+    regexes: [
+      /#(define|ifdef|if|else|elif|ifndef).*\n/g
+    ]
   }
 };
 
@@ -48,7 +53,8 @@ var featureProbabilities = {
   logStatements: 200,
   // assignments: 5,
   classes: 30,
-  controlFlow: 5
+  controlFlow: 5,
+  preprocessors: 300
 };
 
 module.exports = {
