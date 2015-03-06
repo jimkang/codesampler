@@ -1,6 +1,6 @@
 var config = require('./config');
 var createTweetPoster = require('./tweet-poster').create;
-var createSampleAnalyzeExcerptStream = require('./sample-analyze-excerpt-stream').create;
+var createSampleAnalyzePostableStream = require('./sample-analyze-postable-stream').create;
 var chroniclerclient = require('./chroniclerclient');
 
 var db = chroniclerclient.getDb();
@@ -28,7 +28,7 @@ function postAndRecord(excerpt) {
   }
 }
 
-createSampleAnalyzeExcerptStream(
+createSampleAnalyzePostableStream(
   {
     db: db
   },

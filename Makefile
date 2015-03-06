@@ -13,7 +13,7 @@ test:
 	node tests/already-used-filter-tests.js
 
 test-integration: start-sampledcode-chronicler
-	node tests/integration/sample-analyze-excerpt-tests.js
+	node tests/integration/sample-analyze-postable-tests.js
 
 run: start-sampledcode-chronicler
 	node run-code-sampler.js

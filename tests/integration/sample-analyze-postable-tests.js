@@ -1,4 +1,4 @@
-var createSampleAnalyzeExcerptStream = require('../../sample-analyze-excerpt-stream').create;
+var createSampleAnalyzePostableStream = require('../../sample-analyze-postable-stream').create;
 var test = require('tape');
 var conformAsync = require('conform-async');
 var chroniclerclient = require('../../chroniclerclient');
@@ -7,7 +7,7 @@ test('Post excerpts', function postExcerpts(t) {
   t.plan(1);
   var db = chroniclerclient.getDb();
 
-  createSampleAnalyzeExcerptStream(
+  createSampleAnalyzePostableStream(
     {
       db: db
     },
@@ -35,4 +35,3 @@ test('Post excerpts', function postExcerpts(t) {
     });
   }
 });
-
