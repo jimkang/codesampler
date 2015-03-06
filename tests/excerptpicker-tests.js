@@ -2,12 +2,7 @@ var test = require('tape');
 var createExcerptPicker = require('../excerptpicker').create;
 var _ = require('lodash');
 var conformAsync = require('conform-async');
-
-function createAnalysisWithCode(code) {
-  return {
-    code: code
-  };
-}
+var createExcerptAnalysisWithCode = require('../commit-summary-analyzer').createExcerptAnalysisWithCode;
 
 var testComments = [
   '\t// BufferedReader br = new BufferedReader(new FileReader(new\r',
@@ -15,7 +10,7 @@ var testComments = [
   '\t// TODO Auto-generated catch block\r',
   '\t// TODO Auto-generated catch block\r'
 ]
-.map(createAnalysisWithCode);
+.map(createExcerptAnalysisWithCode);
 
 var testFunctions1 = [
   'function(active_calls_by_agent) {',
@@ -23,7 +18,7 @@ var testFunctions1 = [
   'function(active_calls_by_agent) {',
   'function(agent_name, call_duration) {',
 ]
-.map(createAnalysisWithCode);
+.map(createExcerptAnalysisWithCode);
 
 var testFunctions2 = [
   'function(xml) {',
@@ -53,7 +48,7 @@ var testFunctions2 = [
   'function(agent_name, call_duration) {',
   'function(agent_id, info) {'
 ]
-.map(createAnalysisWithCode);
+.map(createExcerptAnalysisWithCode);
 
 function mockCreateTableThatPicksFunctions() {
   return {
