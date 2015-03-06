@@ -9,7 +9,7 @@ function createExcerptWithCode(code) {
 }
 
 test('Post packages', function postPackages(t) {
-  t.plan(3);
+  t.plan(4);
 
   var tweetStream = createAnalysisToExcerptStream({
     excerptPicker: function pickFunction(analysis, done) {
@@ -48,6 +48,11 @@ test('Post packages', function postPackages(t) {
   });
 
   tweetStream.on('end', function onEnd() {
+    t.equal(
+      receivedPackageCount,
+      2,
+      'Does not emit a postable for an analysis that duplicates the code of another one.'
+    );
     t.pass('Stream ended.');
   });
 
@@ -68,6 +73,17 @@ test('Post packages', function postPackages(t) {
     {
       sha: 'yes',
       url: 'http://realultimatepower.net',
+      functions: [
+        "function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on and on and on till the brink of dawn) {",
+      ]
+      .map(createExcerptWithCode)
+    }
+  );
+
+  tweetStream.write(
+    {
+      sha: 'yes',
+      url: 'http://realultimatepower2.net',
       functions: [
         "function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on and on and on till the brink of dawn) {",
       ]

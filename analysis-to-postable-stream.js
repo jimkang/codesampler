@@ -4,6 +4,7 @@ var tweetTruncate = require('tweet-truncate');
 function createAnalysisToTweetPostableStream(opts) {
   var excerptPicker;
   var log = function noOp() {};
+  var codePushedToStream = {};
  
   if (opts) {
     if (opts.excerptPicker) {
@@ -33,19 +34,23 @@ function createAnalysisToTweetPostableStream(opts) {
           // log('No excerpt found in analysis:', analysis);
         }
         else {
-          var truncatedText = tweetTruncate({
-            text: excerpt.code,
-            delimiter: '\n',
-            urlsToAdd: [
-              analysis.url
-            ]
-          });
+          if (!codePushedToStream[excerpt.code]) {
+            var truncatedText = tweetTruncate({
+              text: excerpt.code,
+              delimiter: '\n',
+              urlsToAdd: [
+                analysis.url
+              ]
+            });
 
-          stream.push({
-            text: truncatedText,
-            code: excerpt.code,
-            url: analysis.url
-          });
+            stream.push({
+              text: truncatedText,
+              code: excerpt.code,
+              url: analysis.url
+            });
+          }
+
+          codePushedToStream[excerpt.code] = true;
         }
         callback();
       }
