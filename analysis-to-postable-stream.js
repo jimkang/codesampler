@@ -46,7 +46,9 @@ function createAnalysisToTweetPostableStream(opts) {
             stream.push({
               text: truncatedText,
               code: excerpt.code,
-              url: analysis.url
+              url: analysis.url,
+              numberOfReadableWords: excerpt.numberOfReadableWords,
+              rarityOfWords: excerpt.rarityOfWords
             });
           }
 

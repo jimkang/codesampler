@@ -1,8 +1,15 @@
 var test = require('tape');
 // var jsonfile = require('jsonfile');
 var createCommitSummaryAnalyzer = require('../commit-summary-analyzer').create;
-// var conformAsync = require('conform-async');
+var conformAsync = require('conform-async');
 var _ = require('lodash');
+
+var mockExcerptRater = {
+  rateAnalysis: function mockRateAnalysis(analysis, done) {
+    // Passthrough.
+    conformAsync.callBackOnNextTick(done, null, analysis);    
+  }
+}
 
 test('Comment finding', function commentFinding(t) {
   t.plan(2);
@@ -17,7 +24,10 @@ test('Comment finding', function commentFinding(t) {
     ]
   };
 
-  var analyzer = createCommitSummaryAnalyzer();
+  var analyzer = createCommitSummaryAnalyzer({
+    excerptRater: mockExcerptRater
+  });
+  
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
@@ -68,7 +78,10 @@ test('Function finding', function functionFinding(t) {
     ]
   };
 
-  var analyzer = createCommitSummaryAnalyzer();
+  var analyzer = createCommitSummaryAnalyzer({
+    excerptRater: mockExcerptRater
+  });
+
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
@@ -104,7 +117,9 @@ test('Log finding', function logFinding(t) {
     ]
   };
 
-  var analyzer = createCommitSummaryAnalyzer();
+  var analyzer = createCommitSummaryAnalyzer({
+    excerptRater: mockExcerptRater
+  });
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
@@ -170,7 +185,10 @@ test('Class finding', function classFinding(t) {
     ]
   };
 
-  var analyzer = createCommitSummaryAnalyzer();
+  var analyzer = createCommitSummaryAnalyzer({
+    excerptRater: mockExcerptRater
+  });
+
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
@@ -202,7 +220,10 @@ test('Control flow finding', function controlFlowFinding(t) {
     ]
   };
 
-  var analyzer = createCommitSummaryAnalyzer();
+  var analyzer = createCommitSummaryAnalyzer({
+    excerptRater: mockExcerptRater
+  });
+
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
@@ -235,7 +256,10 @@ test('Preprocessor finding', function preprocessorFinding(t) {
     ]
   };
 
-  var analyzer = createCommitSummaryAnalyzer();
+  var analyzer = createCommitSummaryAnalyzer({
+    excerptRater: mockExcerptRater
+  });
+
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.deepEqual(
@@ -306,7 +330,10 @@ test('Analysis stream', function testAnalysisStream(t) {
 
   var streamIndex = 0;
 
-  var analyzer = createCommitSummaryAnalyzer();
+  var analyzer = createCommitSummaryAnalyzer({
+    excerptRater: mockExcerptRater
+  });
+
   var analysisStream = analyzer.createAnalysisStream();
 
   analysisStream.on('data', function checkData(analysis) {
@@ -344,7 +371,10 @@ test('Summary property passthrough', function summaryPassthrough(t) {
     ]
   };
 
-  var analyzer = createCommitSummaryAnalyzer();
+  var analyzer = createCommitSummaryAnalyzer({
+    excerptRater: mockExcerptRater
+  });
+
   analyzer.analyze(commitSummary, function checkAnalysis(error, analysis) {
     t.ok(!error, 'Analyze does not give an error.');
     t.equal(analysis.sha, commitSummary.sha, 'Passes along sha.');

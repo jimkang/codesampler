@@ -2,8 +2,18 @@ var conformAsync = require('conform-async');
 var _ = require('lodash');
 var through2 = require('through2');
 var codefeatures = require('./codefeatures');
+var createExcerptRater = require('./excerptrater').create;
 
 function createCommitSummaryAnalyzer(opts) {
+  var excerptRater;
+
+  if (opts && opts.excerptRater) {
+    excerptRater = opts.excerptRater;
+  }
+  else {
+    excerptRater = createExcerptRater();
+  }
+
   function analyze(commitSummary, done) {
     var analysis = _.pick(commitSummary, 'sha', 'url');
 
@@ -15,8 +25,7 @@ function createCommitSummaryAnalyzer(opts) {
         analysis[feature] = instances.map(createExcerptAnalysisWithCode);
       }
     }
-
-    conformAsync.callBackOnNextTick(done, null, analysis);
+    excerptRater.rateAnalysis(analysis, done);
   }
 
   function findInPatches(commitSummary, regexes) {

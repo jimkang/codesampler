@@ -11,9 +11,11 @@ test:
 	node tests/analysis-to-postable-stream-tests.js
 	node tests/excerptpicker-tests.js
 	node tests/already-used-filter-tests.js
+	node tests/excerptrater-tests.js
 
 test-integration: start-sampledcode-chronicler
 	node tests/integration/sample-analyze-postable-tests.js
+	node tests/integration/excerptrater-live-tests.js
 
 run: start-sampledcode-chronicler
 	node run-code-sampler.js

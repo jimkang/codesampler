@@ -1,17 +1,13 @@
-var createAnalysisToExcerptStream = require('../analysis-to-postable-stream').create;
+var createAnalysisToPostableStream = require('../analysis-to-postable-stream').create;
 var test = require('tape');
 var conformAsync = require('conform-async');
-
-function createExcerptWithCode(code) {
-  return {
-    code: code
-  };
-}
+var createExcerptAnalysisWithCode = require('../commit-summary-analyzer').createExcerptAnalysisWithCode;
+var _ = require('lodash');
 
 test('Post packages', function postPackages(t) {
   t.plan(4);
 
-  var tweetStream = createAnalysisToExcerptStream({
+  var tweetStream = createAnalysisToPostableStream({
     excerptPicker: function pickFunction(analysis, done) {
       conformAsync.callBackOnNextTick(
         done, null, analysis.functions[0]
@@ -24,7 +20,7 @@ test('Post packages', function postPackages(t) {
   tweetStream.on('data', function onData(excerpt) {
     if (receivedPackageCount === 0) {
       t.deepEqual(
-        excerpt,
+        _.pick(excerpt, 'text', 'code', 'url'),
         {
           text: 'function validateEmailAddress (emailAddress) {\nhttp://zombo.com',
           code: 'function validateEmailAddress (emailAddress) {',
@@ -35,7 +31,7 @@ test('Post packages', function postPackages(t) {
     }
     else {
       t.deepEqual(
-        excerpt,
+        _.pick(excerpt, 'text', 'code', 'url'),
         {
           text: 'function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on …\nhttp://realultimatepower.net',
           code: 'function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on and on and on till the brink of dawn) {',
@@ -65,7 +61,7 @@ test('Post packages', function postPackages(t) {
         "function(snap) {",
         "function(evt) {",
       ]
-      .map(createExcerptWithCode)
+      .map(createExcerptAnalysisWithCode)
     }
   );
 
@@ -76,7 +72,7 @@ test('Post packages', function postPackages(t) {
       functions: [
         "function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on and on and on till the brink of dawn) {",
       ]
-      .map(createExcerptWithCode)
+      .map(createExcerptAnalysisWithCode)
     }
   );
 
@@ -87,7 +83,7 @@ test('Post packages', function postPackages(t) {
       functions: [
         "function prestidigitate(really, really, really, long, list, of, parameters, that, just goes on and on and on and on and on and on till the brink of dawn) {",
       ]
-      .map(createExcerptWithCode)
+      .map(createExcerptAnalysisWithCode)
     }
   );
 
