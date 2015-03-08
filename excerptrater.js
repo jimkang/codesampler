@@ -13,6 +13,12 @@ function createExcerptRater(opts) {
     wordnok = opts.wordnok;
   }
 
+  var numberOfCharsToScanInEachExcerpt = 200;
+
+  if (opts && opts.numberOfCharsToScanInEachExcerpt) {
+    numberOfCharsToScanInEachExcerpt = opts.numberOfCharsToScanInEachExcerpt;
+  }
+
   function rateAnalysis(analysis, done) {
     var rated = _.cloneDeep(analysis);
 
@@ -51,9 +57,11 @@ function createExcerptRater(opts) {
 
   function addWordStatsToExcerpt(excerpt, done) {
     // TODO: Caching.
-    var spaceSeparatedCode = changeCase.sentenceCase(excerpt.code);
+    var ratebleText = excerpt.code.substr(0, numberOfCharsToScanInEachExcerpt);
+    var spaceSeparatedCode = changeCase.sentenceCase(ratebleText);
     var words = getWordTokensFromCode(spaceSeparatedCode);
     words = _.uniq(words);
+
     wordnok.getWordFrequencies(words, function addFrequencies(error, freqs) {
       if (error) {
         done(error);
