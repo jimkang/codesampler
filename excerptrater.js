@@ -3,6 +3,10 @@ var queue = require('queue-async');
 var createWordnok = require('wordnok');
 var changeCase = require('change-case');
 var config = require('./config');
+var codeFeatures = require('./codefeatures');
+var conformAsync = require('conform-async');
+
+var featureNames = Object.keys(codeFeatures.identifiers);
 
 function createExcerptRater(opts) {
   var wordnok = createWordnok({
@@ -24,30 +28,32 @@ function createExcerptRater(opts) {
 
     var q = queue(1);
 
-    if (rated.functions) {
-      q.defer(addWordStatsToExcerpts, rated.functions);
-    }
-    if (rated.comments) {
-      q.defer(addWordStatsToExcerpts, rated.comments);
-    }
+    featureNames.forEach(function queueAddWordStats(feature) {
+      q.defer(addWordStatsToExcerpts, rated[feature]);
+    });
 
-    q.await(function attachResultsToRated(error, functions, comments) {
+    q.awaitAll(function attachResultsToRated(error, featureExcerptGroups) {
       if (error) {
-        done(error);        
+        done(error);
       }
       else {
-        if (isNonEmptyArray(functions)) {
-          rated.functions = functions;
-        }
-        if (isNonEmptyArray(comments)) {
-          rated.comments = comments;
-        }
+        featureNames.forEach(function attachExcerptsForFeature(feature, i) {
+          var featureExcerpts = featureExcerptGroups[i];
+          if (isNonEmptyArray(featureExcerpts)) {
+            rated[feature] = featureExcerpts;
+          }
+        });
         done(error, rated);
       }
     });
   }
 
   function addWordStatsToExcerpts(excerpts, done) {
+    if (!Array.isArray(excerpts)) {
+      conformAsync.callBackOnNextTick(done, null);
+      return;
+    }
+
     var q = queue(2);
     excerpts.forEach(function queueLookup(excerpt) {
       q.defer(addWordStatsToExcerpt, excerpt);
@@ -57,8 +63,8 @@ function createExcerptRater(opts) {
 
   function addWordStatsToExcerpt(excerpt, done) {
     // TODO: Caching.
-    var ratebleText = excerpt.code.substr(0, numberOfCharsToScanInEachExcerpt);
-    var spaceSeparatedCode = changeCase.sentenceCase(ratebleText);
+    var ratableText = excerpt.code.substr(0, numberOfCharsToScanInEachExcerpt);
+    var spaceSeparatedCode = changeCase.sentenceCase(ratableText);
     var words = getWordTokensFromCode(spaceSeparatedCode);
     words = _.uniq(words);
 
@@ -84,7 +90,6 @@ function isNonEmptyArray(array) {
 }
 
 function rarityFromFrequencies(frequencies) {
-  debugger;
   var noZeroes = _.compact(frequencies);
   var logged = noZeroes.map(Math.log);
   var inverses = logged.map(invertFrequency);

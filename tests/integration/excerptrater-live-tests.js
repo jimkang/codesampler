@@ -7,7 +7,8 @@ test('Rate functions', function rateFunctions(t) {
   var unratedAnalysis = {
     functions: 
       [
-        'if !flag(BuildDemo)'
+        'if !flag(BuildDemo)',
+        'debug("The method " + joinPoint.getSignature().getName() + "()'
       ]
       .map(createExcerptAnalysisWithCode)
   };
@@ -16,6 +17,10 @@ test('Rate functions', function rateFunctions(t) {
     {
       numberOfReadableWords: 4,
       rarityOfWords: 24.61202774745051
+    },
+    {
+      numberOfReadableWords: 9,
+      rarityOfWords: 45.416609091821286
     }
   ];
 
