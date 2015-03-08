@@ -35,7 +35,8 @@ var identifiers = {
   },
   controlFlow: {
     regexes: [
-      /(if|while|for)[\s|\(].*\n/g,
+      /(if|while)[\s|\(].*\n/g,
+      /\bfor\s*\(.*\n/g,
       /\w[\w\d_]*\.(forEach|map|reduce).*\n/g
     ]
   },
