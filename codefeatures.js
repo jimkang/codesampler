@@ -53,7 +53,7 @@ var featureProbabilities = {
   // Prefer this if it actually is present, which it usually isn't.
   logStatements: 200,
   // assignments: 5,
-  classes: 30,
+  classes: 10,
   controlFlow: 5,
   preprocessors: 300
 };
