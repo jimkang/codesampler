@@ -33,9 +33,10 @@ test('Comment finding', function commentFinding(t) {
     t.deepEqual(
       _.pluck(analysis.comments, 'code'),
       [
-        " // Creating a paper button.",
-        " // Creating uiBinder for polymer elements",
-        " // FIXME: This text does not work because \"label\" is deprecated",
+        '"""Exception for problems with pathfinding"""',
+        "// Creating a paper button.",
+        "// Creating uiBinder for polymer elements",
+        "// FIXME: This text does not work because \"label\" is deprecated",
         // "# This file should include the api call to CAISO, cron every 10 minute.  Collects realtime data which updates every 10 minutes.",
         // "## DATA SOURCE DOCUMENTATION:",
         // "# http://www.caiso.com/Documents/SystemAccessInformation_MarketParticipants.pdf",
@@ -55,7 +56,6 @@ test('Comment finding', function commentFinding(t) {
         // "# contents = filehandle.read()",
         // "# print contents",
         // "## TODO: check values within expected bounds, confirm timestamp is new, and update into db of dynamic data"
-        '"""Exception for problems with pathfinding"""',
         // TODO: Do some matching without regular expressions so you can catch 
         // more than one of these comments.
         // '"""Store the message as usual, and also the optional arguments:\n+\n+        ``path``: a list of Place names to show such a path as you found\n+\n+        ``followed``: the portion of the path actually followed\n+\n+        ``traveller``: the Thing doing the travelling\n+\n+        ``branch``: branch during travel\n+\n+        ``tick``: tick at time of error (might not be the tick at the\n+        time this exception is raised)\n+\n+        ``lastplace``: where the traveller was, when the error happened\n+\n"""\n',        
@@ -309,12 +309,12 @@ test('Analysis stream', function testAnalysisStream(t) {
     },
     {
       comments: [
-       ' // FIN frame',
-       ' // text mode',
-       ' // no mask',
-       ' // case: 7-bit data length will suffice',
-       ' // case: 64-bit data length',
-       ' // case: 16-bit data length'
+       '// FIN frame',
+       '// text mode',
+       '// no mask',
+       '// case: 7-bit data length will suffice',
+       '// case: 64-bit data length',
+       '// case: 16-bit data length'
       ],
       functions: [
         'fn write_stream<T: Stream>(stream: &mut BufferedStream<T>, data: &Vec<u8>) {',

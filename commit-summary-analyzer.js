@@ -21,6 +21,16 @@ function createCommitSummaryAnalyzer(opts) {
       var instances = findInPatches(
         commitSummary, codefeatures.identifiers[feature].regexes
       );
+
+      var moreInstances = runFnsOnPatches(
+        commitSummary,
+        codefeatures.identifiers[feature].findFns
+      );
+
+      if (moreInstances) {
+        instances = instances.concat(moreInstances);
+      }
+
       if (instances.length > 0) {
         analysis[feature] = instances.map(createExcerptAnalysisWithCode);
       }
@@ -44,6 +54,19 @@ function createCommitSummaryAnalyzer(opts) {
     }
 
     return _.compact(regexes.reduce(findWithRegex, []));
+  }
+
+  function runFnsOnPatches(commitSummary, fns) {
+    var targets = [];
+    if (fns && commitSummary && commitSummary.patches) {
+      for (var i = 0; i < fns.length; ++i) {
+        for (var j = 0; j < commitSummary.patches.length; ++j) {
+          var findings = _.compact(fns[i](commitSummary.patches[j]));
+          targets = targets.concat(findings);
+        }
+      }
+    }
+    return targets;
   }
 
   function createAnalysisStream(opts) {

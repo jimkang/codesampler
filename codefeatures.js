@@ -1,9 +1,34 @@
+var cStyleCommentRegex = /\/\/.*[^\n]/g;
+var httpLength = 'http:'.length;
+var httpsLength = 'https:'.length;
+
 var identifiers = {
   comments: {
-    regexes: [
-      /[^https*:]\/\/.*[^\n]+/g, // C-style
+    regexes: [,
       /""".*"""/g, // Long Python comments
       // /#.*[^\n]+/g // Python, shell.
+    ],
+    findFns: [
+      function findCommentsInPatch(patch) {
+        var comments = [];
+        var results;
+
+        while ((results = cStyleCommentRegex.exec(patch)) !== null) {
+          if (results.index >= httpsLength &&
+            patch.substr(results.index - httpsLength)
+            .indexOf('https://') === 0) {
+              // It's a url, not a comment.
+              continue;
+          }
+          if (results.index >= httpLength &&
+            patch.substr(results.index - httpLength).indexOf('http://') === 0) {
+              // It's a url, not a comment.
+              continue;
+          }
+          comments.push(results[0]);
+        }
+        return comments;
+      }
     ]
   },
   functions: {
