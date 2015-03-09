@@ -29,7 +29,7 @@ function createExcerptRater(opts) {
   function rateAnalysis(analysis, done) {
     var rated = _.cloneDeep(analysis);
 
-    var q = queue(1);
+    var q = queue(4);
 
     featureNames.forEach(function queueAddWordStats(feature) {
       q.defer(addWordStatsToExcerpts, rated[feature]);
