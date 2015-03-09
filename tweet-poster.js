@@ -1,4 +1,5 @@
 var TwitModule = require('twit');
+var conformAsync = require('conform-async');
 
 function createTweetPoster(opts) {
   var Twit = TwitModule;
@@ -15,6 +16,7 @@ function createTweetPoster(opts) {
   function postTweet(text, done) {
     if (opts.dryRun) {
       log('Would have tweeted:', text);
+      conformAsync.callBackOnNextTick(done);
     }
     else {
       twit.post(

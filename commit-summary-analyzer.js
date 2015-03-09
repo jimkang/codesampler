@@ -11,7 +11,15 @@ function createCommitSummaryAnalyzer(opts) {
     excerptRater = opts.excerptRater;
   }
   else {
-    excerptRater = createExcerptRater();
+    excerptRater = createExcerptRater({
+      // !! Disabling word lookup stuff for now. It's just too slow and 
+      // doesn't really distinguish good stuff from bad stuff that well.
+      wordnok: {
+        getWordFrequencies: function dummyGetWordFrequences(words, done) {
+          conformAsync.callBackOnNextTick(done, null, words.map(getZero));
+        }
+      }
+    });
   }
 
   function analyze(commitSummary, done) {
@@ -102,6 +110,10 @@ function createExcerptAnalysisWithCode(code) {
   return {
     code: code
   };
+}
+
+function getZero() {
+  return 0;
 }
 
 module.exports = {

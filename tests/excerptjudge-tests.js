@@ -33,7 +33,7 @@ test('Score excerpts', function scoreExcerpts(t) {
 
   var expectedScores = [
     5,
-    11,
+    18,
     12,
     27,
     5,

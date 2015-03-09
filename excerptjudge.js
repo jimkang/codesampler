@@ -22,6 +22,10 @@ function createExcerptJudge() {
       case 'functions':
         score += 5;
         break;
+      case 'comments':
+        // If word analysis ever comes back, this can probably be dropped.
+        score += 7;
+        break;
     }
     return score;
   }
