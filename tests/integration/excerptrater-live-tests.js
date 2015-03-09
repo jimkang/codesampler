@@ -19,7 +19,7 @@ test('Rate functions', function rateFunctions(t) {
       rarityOfWords: 24.61202774745051
     },
     {
-      numberOfReadableWords: 9,
+      numberOfReadableWords: 8,
       rarityOfWords: 45.416609091821286
     }
   ];
