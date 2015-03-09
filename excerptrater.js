@@ -10,7 +10,10 @@ var featureNames = Object.keys(codeFeatures.identifiers);
 
 function createExcerptRater(opts) {
   var wordnok = createWordnok({
-    apiKey: config.wordnikAPIKey
+    apiKey: config.wordnikAPIKey,
+    logger: {
+      log: function noOp() {}
+    }
   });
 
   if (opts && opts.wordnok) {
