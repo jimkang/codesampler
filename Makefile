@@ -12,6 +12,7 @@ test:
 	node tests/excerptpicker-tests.js
 	node tests/already-used-filter-tests.js
 	node tests/excerptrater-tests.js
+	node tests/excerptjudge-tests.js
 
 test-integration: start-sampledcode-chronicler
 	node tests/integration/sample-analyze-postable-tests.js
