@@ -48,7 +48,8 @@ function createAnalysisToTweetPostableStream(opts) {
               code: excerpt.code,
               url: analysis.url,
               numberOfReadableWords: excerpt.numberOfReadableWords,
-              rarityOfWords: excerpt.rarityOfWords
+              rarityOfWords: excerpt.rarityOfWords,
+              featureType: excerpt.featureType
             });
           }
 

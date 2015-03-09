@@ -23,6 +23,12 @@ function createExcerptPicker(opts) {
   function getCodeFromExcerpt(excerpt) {
     return excerpt.code;
   }
+
+  function makeSelection(choices, chosenExcerptType) {
+    var choice = pickFromArray(choices);
+    choice.featureType = chosenExcerptType;
+    return choice;
+  }
   
   return function pickExcerptFromAnalysis(analysis, done) {
     var presentFeatures = _.intersection(
@@ -50,14 +56,14 @@ function createExcerptPicker(opts) {
           done(error);
         }
         else {
-          choice = pickFromArray(filteredChoices);
-          done(null, choice);
+          done(null, makeSelection(filteredChoices, chosenExcerptType));
         }
       });
     }
     else {
-      choice = pickFromArray(choices);
-      conformAsync.callBackOnNextTick(done, null, choice);
+      conformAsync.callBackOnNextTick(
+        done, null, makeSelection(choices, chosenExcerptType)
+      );
     }
   }
 }
