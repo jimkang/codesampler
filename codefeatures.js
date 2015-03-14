@@ -73,14 +73,14 @@ var identifiers = {
 };
 
 var featureProbabilities = {
-  comments: 30,
-  functions: 40,
+  comments: 0, //30,
+  functions: 0, //40,
   // Prefer this if it actually is present, which it usually isn't.
   logStatements: 200,
   // assignments: 5,
-  classes: 10,
-  controlFlow: 5,
-  preprocessors: 300
+  classes: 0, //10,
+  controlFlow: 0, //5,
+  preprocessors: 0 //300
 };
 
 module.exports = {

@@ -1,5 +1,5 @@
-HOMEDIR = /var/www/codesampler
-#HOMEDIR = ~/gcw/codesampler
+#HOMEDIR = /var/www/codesampler
+HOMEDIR = ~/gcw/codesampler
 GITDIR = /var/repos/codesampler.git
 
 PM2 = $(HOMEDIR)/node_modules/pm2/bin/pm2

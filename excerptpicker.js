@@ -26,7 +26,9 @@ function createExcerptPicker(opts) {
 
   function makeSelection(choices, chosenExcerptType) {
     var choice = pickFromArray(choices);
-    choice.featureType = chosenExcerptType;
+    if (choice) {
+      choice.featureType = chosenExcerptType;
+    }
     return choice;
   }
   
