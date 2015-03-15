@@ -1,6 +1,6 @@
 {
   "name": "codesampler",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Samples code as it comes into Github, posts it to Twitter.",
   "main": "index.js",
   "scripts": {
