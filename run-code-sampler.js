@@ -11,7 +11,7 @@ if (process.argv.length > 2) {
   dryRun = (process.argv[2].toLowerCase() == '--dry');
 }
 
-var maxPostsPerRun = 7;
+var maxPostsPerRun = 3;
 var db = chroniclerclient.getDb();
 // var judge = createJudge();
 
