@@ -1,7 +1,7 @@
 codesampler
 ==================
 
-Samples publicly available code from Github.
+Samples publicly available code from Github, posts it to Twitter.
 
 Installation
 ------------
