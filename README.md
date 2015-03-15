@@ -32,7 +32,7 @@ Usage
 Tests
 -----
 
-Run tests with `make test`.
+Run tests with `make test` and `make test-integration`.
 
 License
 -------
