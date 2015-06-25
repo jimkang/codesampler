@@ -125,11 +125,11 @@ test('Log finding', function logFinding(t) {
     t.deepEqual(
       _.pluck(analysis.logStatements, 'code'),
       [
-        'console.log(\'whut\')',
-        'NSLog(veryLongVariableName);',
-        'dump(memory)',
-        'stderr.write(error)',
-        'debug(something, otherthing)'
+        '\'whut\'',
+        'veryLongVariableName',
+        'memory',
+        'error',
+        'something, otherthing'
       ],
       'Analysis captures log statements.'
     );

@@ -58,7 +58,16 @@ function createCommitSummaryAnalyzer(opts) {
 
   function findInPatchWithRegexes(regexes, patch) {
     function findWithRegex(found, regex) {
-      return found.concat(patch.match(regex));
+      var matchArray;
+      while ((matchArray = regex.exec(patch)) !== null) {
+        if (matchArray[1]) {
+          found.push(matchArray[1]);
+        }
+        else {
+          found.push(matchArray[0]);
+        }
+      }
+      return found;
     }
 
     return _.compact(regexes.reduce(findWithRegex, []));

@@ -41,11 +41,11 @@ var identifiers = {
   },
   logStatements: {
     regexes: [
-      /console\.log\(.*\)/g, // JS
-      /NSLog\(.*\);/g, // Objective-C
-      /dump\(.*\)/g, // Misc.
-      /stderr.write\(.*\)/g, // Node
-      /debug\(.*\)/g, // Misc.
+      /console\.log\((.*)\)/g, // JS
+      /NSLog\((.*)\);/g, // Objective-C
+      /dump\((.*)\)/g, // Misc.
+      /stderr.write\((.*)\)/g, // Node
+      /debug\((.*)\)/g, // Misc.
     ]
   },
   // assignments: {
@@ -55,19 +55,19 @@ var identifiers = {
   // },
   classes: {
     regexes: [
-      /(class|struct)\s+\w[\w\d-]*.*{*/g
+      /(?:class|struct)\s+\w[\w\d-]*.*{*/g
     ]
   },
   controlFlow: {
     regexes: [
-      /(if|while)[\s|\(].*\n/g,
+      /(?:if|while)[\s|\(].*\n/g,
       /\bfor\s*\(.*\n/g,
-      /\w[\w\d_]*\.(forEach|map|reduce).*\n/g
+      /\w[\w\d_]*\.(?:forEach|map|reduce).*\n/g
     ]
   },
   preprocessors: {
     regexes: [
-      /#(define|ifdef|if|else|elif|ifndef).*\n/g
+      /#(?:define|ifdef|if|else|elif|ifndef).*\n/g
     ]
   }
 };
